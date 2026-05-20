@@ -14,7 +14,7 @@ import Skeleton from '@mui/material/Skeleton';
 import { Iconify } from 'src/components/iconify';
 import { CustomPopover } from 'src/components/custom-popover';
 
-import { getMinimalsModules } from 'src/api/admin/minimals';
+import { getModules } from 'src/api/core/module';
 
 // ----------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ export function SwitcherPopover({ sx, ...other }: SwitcherPopoverProps) {
 
   const { open, anchorEl, onClose, onOpen } = usePopover();
 
-  const { switchData, switchDataLoading } = getMinimalsModules();
+  const { switchData, switchDataLoading } = getModules();
 
   const buttonBg: SxProps<Theme> = {
     height: 1,

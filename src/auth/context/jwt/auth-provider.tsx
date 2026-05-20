@@ -34,7 +34,7 @@ export function AuthProvider({ children }: Readonly<Props>) {
         setAccess(accessToken);
 
         try {
-          await axios.get(endpoints.auth.check);
+          await axios.get(endpoints.core.admin.auth.check);
           validAccess = true;
 
           const decoded = jwtDecode(accessToken);
@@ -47,7 +47,7 @@ export function AuthProvider({ children }: Readonly<Props>) {
       }
 
       if (!validAccess && refreshToken) {
-        const response = await axios.get(`${endpoints.auth.validate}?AppCode=${encodeURIComponent(CONFIG.appCode)}&ModuleCode=${encodeURIComponent(CONFIG.moduleCode)}&RefreshToken=${encodeURIComponent(refreshToken)}`);
+        const response = await axios.get(`${endpoints.core.admin.auth.validate}?AppCode=${encodeURIComponent(CONFIG.appCode)}&ModuleCode=${encodeURIComponent(CONFIG.moduleCode)}&RefreshToken=${encodeURIComponent(refreshToken)}`);
       
         const { AccessToken, RefreshToken } = response.data;
 

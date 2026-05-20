@@ -17,7 +17,7 @@ import { Iconify } from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { CustomPopover } from 'src/components/custom-popover';
 
-import { deleteApplication } from 'src/api/admin/application';
+import { deleteApplication } from 'src/api/app/application';
 
 // ----------------------------------------------------------------------
 

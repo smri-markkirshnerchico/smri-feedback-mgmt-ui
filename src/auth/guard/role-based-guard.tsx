@@ -14,7 +14,7 @@ import { LoadingScreen } from 'src/components/loading-screen';
 
 import { usePathname } from 'src/routes/hooks';
 
-import { getMinimalsMenu } from 'src/api/admin/minimals';
+import { getMenus } from 'src/api/core/menu';
 
 // ----------------------------------------------------------------------
 
@@ -24,7 +24,7 @@ export type RoleBasedGuardProp = {
 };
 
 export function RoleBasedGuard({ children, sx }: Readonly<RoleBasedGuardProp>) {
-  const { navData, navDataLoading } = getMinimalsMenu();
+  const { navData, navDataLoading } = getMenus();
 
   const pathname = usePathname().replace(/\/$/, "");
 

@@ -66,7 +66,7 @@ export function tokenExpired(exp: number) {
   setTimeout(async () => {
     try {
       const refreshToken = getRefresh();
-      const response = await axios.get(`${endpoints.auth.validate}?AppCode=${encodeURIComponent(CONFIG.appCode)}&ModuleCode=${encodeURIComponent(CONFIG.moduleCode)}&RefreshToken=${encodeURIComponent(refreshToken)}`);
+      const response = await axios.get(`${endpoints.core.admin.auth.validate}?AppCode=${encodeURIComponent(CONFIG.appCode)}&ModuleCode=${encodeURIComponent(CONFIG.moduleCode)}&RefreshToken=${encodeURIComponent(refreshToken)}`);
       
       const { AccessToken, RefreshToken } = response.data;
 

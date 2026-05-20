@@ -2,7 +2,6 @@ export type IApplication = {
     AppId: string;
     AppCode: string;
     AppName: string;
-    AppKey: string;
     IsActive: boolean;
 };
 

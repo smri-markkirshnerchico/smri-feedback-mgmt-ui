@@ -26,7 +26,7 @@ import { CONFIG } from 'src/global-config';
 
 import { usePathname } from 'src/routes/hooks';
 
-import { getMinimalsMenu } from 'src/api/admin/minimals';
+import { getMenus } from 'src/api/core/menu';
 
 // ----------------------------------------------------------------------
 
@@ -65,7 +65,7 @@ export function CustomBreadcrumbs({
 }: CustomBreadcrumbsProps) {
   const theme = useTheme();
 
-  const { navData } = getMinimalsMenu();
+  const { navData } = getMenus();
 
   const pathname = usePathname();
 

@@ -34,7 +34,7 @@ import { ApplicationTableRow } from '../application-table-row';
 import { ApplicationTableToolbar } from '../application-table-toolbar';
 import { ApplicationTableFiltersResult } from '../application-table-filters-result';
 
-import { getApplications } from 'src/api/admin/application';
+import { getApplications } from 'src/api/app/application';
 
 // ----------------------------------------------------------------------
 

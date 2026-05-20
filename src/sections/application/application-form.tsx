@@ -16,7 +16,7 @@ import DialogContent from '@mui/material/DialogContent';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
-import { createApplication, updateApplication } from 'src/api/admin/application';
+import { createApplication, updateApplication } from 'src/api/app/application';
 
 // ----------------------------------------------------------------------
 
@@ -104,7 +104,6 @@ export function ApplicationForm({ current, open, onClose }: Readonly<Props>) {
               <Field.Text name="AppCode" label="Code" />
               <Field.Text name="AppName" label="Name" />
             </Box>
-            <Field.Text name="AppKey" label="Key" multiline disabled />
             <Field.Switch name="IsActive" label="Active" />
           </Stack>
         </DialogContent>

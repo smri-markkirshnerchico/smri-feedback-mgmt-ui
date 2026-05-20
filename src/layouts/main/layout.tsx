@@ -32,7 +32,7 @@ import type { MainSectionProps } from '../core/main-section';
 import type { HeaderSectionProps } from '../core/header-section';
 import type { LayoutSectionProps } from '../core/layout-section';
 
-import { getMinimalsMenu } from 'src/api/admin/minimals';
+import { getMenus } from 'src/api/core/menu';
 
 // ----------------------------------------------------------------------
 
@@ -68,7 +68,7 @@ export function MainLayout({
   const isNavHorizontal = settings.state.navLayout === 'horizontal';
   const isNavVertical = isNavMini || settings.state.navLayout === 'vertical';
 
-  const { navData, navDataLoading } = getMinimalsMenu();
+  const { navData, navDataLoading } = getMenus();
 
   const renderHeader = () => {
     const headerSlotProps: HeaderSectionProps['slotProps'] = {

@@ -22,7 +22,7 @@ export const signIn = async ({ username, password }: SignInParams): Promise<void
   try {
     const params = { Username: username, Password: password, ModuleCode: CONFIG.moduleCode, AppCode: CONFIG.appCode };
 
-    const res = await axios.post(endpoints.auth.login, params);
+    const res = await axios.post(endpoints.core.admin.auth.login, params);
 
     const { AccessToken, RefreshToken } = res.data;
 
@@ -47,7 +47,7 @@ export const signIn = async ({ username, password }: SignInParams): Promise<void
  *************************************** */
 export const signOut = async (): Promise<void> => {
   try {
-    await axios.get(endpoints.auth.logout);
+    await axios.get(endpoints.core.admin.auth.logout);
   } catch (error) {
     console.error('Error during sign out:', error);
   } finally {
