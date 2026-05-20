@@ -120,7 +120,7 @@ export function JwtSignInView() {
   return (
     <>
       <FormHead
-        title="Sign in with your organizational account"
+        title="Sign in with your organizational accounts"
         sx={{ textAlign: { xs: 'center', md: 'left' } }}
       />
 
