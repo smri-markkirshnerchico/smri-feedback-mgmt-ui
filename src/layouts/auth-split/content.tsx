@@ -25,14 +25,17 @@ export function AuthSplitContent({
       className={mergeClasses([layoutClasses.content, className])}
       sx={[
         (theme) => ({
+          flex: 1,
           display: 'flex',
-          flex: '1 1 auto',
           alignItems: 'center',
           flexDirection: 'column',
-          p: theme.spacing(3, 2, 10, 2),
+          justifyContent: 'center',
+          bgcolor: '#F4F7F9',
+          p: theme.spacing(3, 2, 6, 2),
           [theme.breakpoints.up(layoutQuery)]: {
-            justifyContent: 'center',
-            p: theme.spacing(10, 2, 10, 2),
+            flex: '1 1 50%',
+            maxWidth: '50%',
+            p: theme.spacing(6, 5),
           },
         }),
         ...(Array.isArray(sx) ? sx : [sx]),
@@ -45,6 +48,10 @@ export function AuthSplitContent({
           display: 'flex',
           flexDirection: 'column',
           maxWidth: 'var(--layout-auth-content-width)',
+          p: { xs: 3.5, sm: 5 },
+          borderRadius: 2.5,
+          bgcolor: 'common.white',
+          boxShadow: '0 12px 40px rgba(15, 23, 42, 0.08)',
         }}
       >
         {children}

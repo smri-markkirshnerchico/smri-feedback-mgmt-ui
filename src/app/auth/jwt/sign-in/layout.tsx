@@ -11,7 +11,7 @@ type Props = {
 export default function Layout({ children }: Readonly<Props>) {
   return (
     <GuestGuard>
-      <AuthSplitLayout>
+      <AuthSplitLayout hideHeader>
         {children}
       </AuthSplitLayout>
     </GuestGuard>

@@ -1,8 +1,6 @@
 import type { BoxProps } from '@mui/material/Box';
 import type { Breakpoint } from '@mui/material/styles';
 
-import { varAlpha } from 'minimal-shared/utils';
-
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
@@ -10,9 +8,12 @@ import { CONFIG } from 'src/global-config';
 
 // ----------------------------------------------------------------------
 
+const LOGIN_LEFT_PANEL_BG = `${CONFIG.assetsDir}/assets/background/LoginLeftPanel.svg`;
+
 export type AuthSplitSectionProps = BoxProps & {
   method?: string;
   imgUrl?: string;
+  title?: string;
   subtitle?: string;
   layoutQuery?: Breakpoint;
   methods?: {
@@ -23,32 +24,31 @@ export type AuthSplitSectionProps = BoxProps & {
 
 export function AuthSplitSection({
   sx,
-  method,
-  methods,
   layoutQuery = 'md',
-  imgUrl = `${CONFIG.assetsDir}/assets/illustrations/illustration-dashboard.webp`,
-  subtitle = 'Manage user access, security, and permissions in a unified platform.',
+  imgUrl = `${CONFIG.assetsDir}/assets/background/login-img.svg`,
+  title = 'Together We Improve',
+  subtitle = 'Share your feedback to help us enhance our workplace, processes, and employee experience.',
   ...other
 }: AuthSplitSectionProps) {
   return (
     <Box
       sx={[
         (theme) => ({
-          ...theme.mixins.bgGradient({
-            images: [
-              `linear-gradient(0deg, ${varAlpha(theme.vars.palette.background.defaultChannel, 0.92)}, ${varAlpha(theme.vars.palette.background.defaultChannel, 0.92)})`,
-              `url(${CONFIG.assetsDir}/assets/background/background-3-blur.webp)`,
-            ],
-          }),
-          px: 3,
-          pb: 18,
+          flex: 1,
+          px: { xs: 3, md: 8 },
+          py: { xs: 6, md: 8 },
           width: 1,
-          maxWidth: 680,
           display: 'none',
           position: 'relative',
-          pt: 'var(--layout-header-desktop-height)',
+          overflow: 'hidden',
+          bgcolor: '#0030FF',
+          backgroundImage: `url(${LOGIN_LEFT_PANEL_BG})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
           [theme.breakpoints.up(layoutQuery)]: {
-            gap: 1,
+            flex: '1 1 50%',
+            maxWidth: '50%',
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'column',
@@ -61,21 +61,47 @@ export function AuthSplitSection({
     >
       <Box
         component="img"
-        alt="Dashboard illustration"
+        alt="Feedback illustration"
         src={imgUrl}
         sx={{
-          width: '100%',
+          position: 'relative',
+          zIndex: 1,
+          width: 1,
+          maxWidth: 420,
           height: 'auto',
-          objectFit: 'cover',
-          borderRadius: 2,
+          mb: 5,
         }}
       />
 
-      <div>
-        <Typography sx={{ color: '#133773', textAlign: 'center' }}>
-          {subtitle}
-        </Typography>
-      </div>
+      <Typography
+        variant="h3"
+        sx={{
+          position: 'relative',
+          zIndex: 1,
+          mb: 2,
+          color: 'common.white',
+          fontWeight: 700,
+          textAlign: 'center',
+          maxWidth: 480,
+        }}
+      >
+        {title}
+      </Typography>
+
+      <Typography
+        variant="body1"
+        sx={{
+          position: 'relative',
+          zIndex: 1,
+          color: 'common.white',
+          textAlign: 'center',
+          maxWidth: 420,
+          lineHeight: 1.7,
+          opacity: 0.95,
+        }}
+      >
+        {subtitle}
+      </Typography>
     </Box>
   );
 }

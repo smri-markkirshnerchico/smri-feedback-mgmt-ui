@@ -13,6 +13,7 @@ import { CONFIG } from 'src/global-config';
 
 import { Logo } from 'src/components/logo';
 
+import { AuthSplitFooter } from './footer';
 import { AuthSplitSection } from './section';
 import { AuthSplitContent } from './content';
 import { MainSection } from '../core/main-section';
@@ -31,6 +32,7 @@ import type { LayoutSectionProps } from '../core/layout-section';
 type LayoutBaseProps = Pick<LayoutSectionProps, 'sx' | 'children' | 'cssVars'>;
 
 export type AuthSplitLayoutProps = LayoutBaseProps & {
+  hideHeader?: boolean;
   layoutQuery?: Breakpoint;
   slotProps?: {
     header?: HeaderSectionProps;
@@ -45,6 +47,7 @@ export function AuthSplitLayout({
   cssVars,
   children,
   slotProps,
+  hideHeader = false,
   layoutQuery = 'md',
 }: AuthSplitLayoutProps) {
   const renderHeader = () => {
@@ -89,12 +92,13 @@ export function AuthSplitLayout({
     );
   };
 
-  const renderFooter = () => null;
+  const renderFooter = () => <AuthSplitFooter />;
 
   const renderMain = () => (
     <MainSection
       {...slotProps?.main}
       sx={[
+        { flex: '1 1 auto' },
         (theme) => ({ [theme.breakpoints.up(layoutQuery)]: { flexDirection: 'row' } }),
         ...(Array.isArray(slotProps?.main?.sx)
           ? (slotProps?.main?.sx ?? [])
@@ -123,7 +127,15 @@ export function AuthSplitLayout({
       /** **************************************
        * @Header
        *************************************** */
-      headerSection={renderHeader()}
+      headerSection={hideHeader ? null : renderHeader()}
+      sx={[
+        {
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
       /** **************************************
        * @Footer
        *************************************** */
@@ -131,8 +143,7 @@ export function AuthSplitLayout({
       /** **************************************
        * @Styles
        *************************************** */
-      cssVars={{ '--layout-auth-content-width': '420px', ...cssVars }}
-      sx={sx}
+      cssVars={{ '--layout-auth-content-width': '440px', ...cssVars }}
     >
       {renderMain()}
     </LayoutSection>
