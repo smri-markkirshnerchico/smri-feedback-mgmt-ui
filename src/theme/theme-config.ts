@@ -44,11 +44,11 @@ export const themeConfig: ThemeConfig = {
    *************************************** */
   palette: {
     primary: {
-      lighter: '#C8FAD6',
-      light: '#5BE49B',
+      lighter: '#F0F4FF',
+      light: '#7F99FF',
       main: '#0030FF',
-      dark: '#007867',
-      darker: '#004B50',
+      dark: '#0020CC',
+      darker: '#001099',
       contrastText: '#FFFFFF',
     },
     secondary: {
