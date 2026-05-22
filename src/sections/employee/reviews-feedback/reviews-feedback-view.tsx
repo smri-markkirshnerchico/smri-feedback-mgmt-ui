@@ -1,7 +1,5 @@
 'use client';
 
-import type { ReviewFeedbackTab } from 'src/types/review-feedback';
-
 import { useMemo, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -76,13 +74,13 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   }, [search, tableData]);
 
   const handleChangeTab = useCallback(
-    (_: React.SyntheticEvent, value: ReviewFeedbackTab) => {
+    (_: React.SyntheticEvent, value: EmployeeReviewFeedbackTab) => {
       router.push(TAB_PATHS[value]);
     },
     [router]
   );
 
-  const renderTabLabel = (tab: ReviewFeedbackTab) => {
+  const renderTabLabel = (tab: EmployeeReviewFeedbackTab) => {
     const count = TAB_COUNTS[tab];
     const isActive = currentTab === tab;
 
@@ -155,7 +153,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
               },
             }}
           >
-            {(Object.keys(TAB_LABELS) as ReviewFeedbackTab[]).map((tab) => (
+            {(Object.keys(TAB_LABELS) as EmployeeReviewFeedbackTab[]).map((tab) => (
               <Tab key={tab} value={tab} label={renderTabLabel(tab)} sx={{ minHeight: 48, px: 0, mr: 1 }} />
             ))}
           </Tabs>
