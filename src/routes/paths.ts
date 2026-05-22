@@ -20,6 +20,7 @@ export const paths = {
     employee: {
       dashboard: `${ROOTS.MAIN}/employee/dashboard`,
       myFeedback: `${ROOTS.MAIN}/employee/my-feedback`,
+      needsMyReview: `${ROOTS.MAIN}/employee/needs-my-review`,
     },
     manager: {
       dashboard: `${ROOTS.MAIN}/manager/dashboard`,
