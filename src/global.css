@@ -1,7 +1,40 @@
 /** **************************************
 * Fonts: app
 *************************************** */
-@import '@fontsource-variable/public-sans';
+@font-face {
+  font-family: 'Henry Sans';
+  src: url('/fonts/Henry Sans/HenrySans-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Henry Sans';
+  src: url('/fonts/Henry Sans/HenrySans-Regular-2.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Henry Sans';
+  src: url('/fonts/Henry Sans/HenrySans-Medium-1.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Henry Sans';
+  src: url('/fonts/Henry Sans/HenrySans-Bold-1.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Henry Sans';
+  src: url('/fonts/Henry Sans/HenrySans-Black-4.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
 
 @import '@fontsource/barlow/400.css';
 @import '@fontsource/barlow/500.css';
