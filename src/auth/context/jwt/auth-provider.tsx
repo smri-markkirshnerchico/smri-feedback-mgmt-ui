@@ -25,6 +25,14 @@ export function AuthProvider({ children }: Readonly<Props>) {
 
   const checkUserSession = useCallback(async () => {
     try {
+      if (CONFIG.auth.skip) {
+        setState({
+          user: { UserId: 'dev-user', Name: 'Dev User', role: CONFIG.devRole },
+          loading: false,
+        });
+        return;
+      }
+
       const accessToken = getAccess()
       const refreshToken = getRefresh();
 

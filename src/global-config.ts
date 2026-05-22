@@ -15,6 +15,7 @@ export type ConfigValue = {
   domainUrl: string;
   iconifyUrl: string;
   moduleId: string;
+  devRole: 'employee' | 'manager' | 'admin';
   auth: {
     method: 'jwt';
     skip: boolean;
@@ -39,9 +40,10 @@ export const CONFIG: ConfigValue = {
    * Auth
    * @method jwt
    */
+  devRole: (process.env.NEXT_PUBLIC_DEV_ROLE ?? 'manager') as 'employee' | 'manager' | 'admin',
   auth: {
     method: 'jwt',
-    skip: false,
+    skip: process.env.NEXT_PUBLIC_DEV_BYPASS_AUTH === 'true',
     redirectPath: paths.main.home,
   }
 };

@@ -7,6 +7,7 @@ import { m } from 'framer-motion';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
+import { CONFIG } from 'src/global-config';
 import { ForbiddenIllustration } from 'src/assets/illustrations';
 
 import { varBounce, MotionContainer } from 'src/components/animate';
@@ -24,6 +25,10 @@ export type RoleBasedGuardProp = {
 };
 
 export function RoleBasedGuard({ children, sx }: Readonly<RoleBasedGuardProp>) {
+  if (CONFIG.auth.skip) {
+    return <>{children}</>;
+  }
+
   const { navData, navDataLoading } = getMenus();
 
   const pathname = usePathname().replace(/\/$/, "");
