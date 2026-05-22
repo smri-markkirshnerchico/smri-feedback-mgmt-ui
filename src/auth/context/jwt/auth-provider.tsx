@@ -38,7 +38,15 @@ export function AuthProvider({ children }: Readonly<Props>) {
           validAccess = true;
 
           const decoded = jwtDecode(accessToken);
-          setState({ user: { ...decoded }, loading: false });
+
+          // Add role from localStorage if available
+          const role = localStorage.getItem('USER_ROLE');
+          const userWithRole = { ...decoded };
+          if (role) {
+            userWithRole.role = role;
+          }
+
+          setState({ user: userWithRole, loading: false });
         } 
         catch (error) {
           console.error(error);
@@ -48,14 +56,22 @@ export function AuthProvider({ children }: Readonly<Props>) {
 
       if (!validAccess && refreshToken) {
         const response = await axios.get(`${endpoints.core.admin.auth.validate}?AppCode=${encodeURIComponent(CONFIG.appCode)}&ModuleCode=${encodeURIComponent(CONFIG.moduleCode)}&RefreshToken=${encodeURIComponent(refreshToken)}`);
-      
+
         const { AccessToken, RefreshToken } = response.data;
 
         setAccess(AccessToken);
         setRefresh(RefreshToken);
 
         const decoded = jwtDecode(AccessToken);
-        setState({ user: { ...decoded }, loading: false });
+
+        // Add role from localStorage if available
+        const role = localStorage.getItem('USER_ROLE');
+        const userWithRole = { ...decoded };
+        if (role) {
+          userWithRole.role = role;
+        }
+
+        setState({ user: userWithRole, loading: false });
       }
       else if (!validAccess) {
         setAccess(null);

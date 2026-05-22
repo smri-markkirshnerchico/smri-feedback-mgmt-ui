@@ -7,23 +7,24 @@ import { useBoolean } from 'minimal-shared/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
 
 import { Iconify } from 'src/components/iconify';
 import { Form, Field } from 'src/components/hook-form';
 
-import { useAuthContext } from '../../hooks';
+import axios from 'src/lib/axios';
+import { endpoints } from 'src/api/endpoints';
+
 import { getErrorMessage } from '../../utils';
 import { FormHead } from '../../components/form-head';
 import { signIn } from '../../context/jwt';
+import { detectRoleFromMenu } from '../../utils/detect-role-from-menu';
+import type { UserRole } from '../../types';
 
 // ----------------------------------------------------------------------
 
@@ -40,12 +41,14 @@ export const SignInSchema = zod.object({
 
 // ----------------------------------------------------------------------
 
+const ROLE_DASHBOARD_MAP: Record<UserRole, string> = {
+  employee: paths.main.employee.dashboard,
+  manager: paths.main.manager.dashboard,
+  admin: paths.main.admin.dashboard,
+};
+
 export function JwtSignInView() {
-  const router = useRouter();
-
   const showPassword = useBoolean();
-
-  const { checkUserSession } = useAuthContext();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -65,14 +68,34 @@ export function JwtSignInView() {
     formState: { isSubmitting },
   } = methods;
 
+
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await signIn({ username: data.username, password: data.password });
-      await checkUserSession?.();
+      setErrorMessage(null);
+      localStorage.removeItem('USER_ROLE');
 
-      router.refresh();
+      await signIn({ username: data.username, password: data.password });
+
+      // Fetch menu to detect role
+      const menuResponse = await axios.get(endpoints.core.admin.menu);
+      const menuData = menuResponse.data;
+
+      // Detect role from menu structure
+      const detectedRole = detectRoleFromMenu(menuData);
+
+      if (!detectedRole) {
+        setErrorMessage('Unable to determine user role. Please contact support.');
+        return;
+      }
+
+      // Save role to localStorage before redirect
+      localStorage.setItem('USER_ROLE', detectedRole);
+
+      // Redirect to role-specific dashboard
+      const redirectPath = ROLE_DASHBOARD_MAP[detectedRole];
+      window.location.href = redirectPath;
     } catch (error) {
-      console.error(error);
+      console.error('Login error:', error);
       const feedbackMessage = getErrorMessage(error);
       setErrorMessage(feedbackMessage);
     }

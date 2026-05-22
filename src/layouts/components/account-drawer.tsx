@@ -46,7 +46,7 @@ export function AccountDrawer({ sx, ...other }: AccountDrawerProps) {
       <AccountButton
         onClick={onOpen}
         photoURL={user?.photoURL}
-        displayName={user?.Name}
+        displayName={user?.Name ?? ''}
         sx={sx}
         {...other}
       />

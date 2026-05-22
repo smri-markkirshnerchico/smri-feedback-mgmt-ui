@@ -1,4 +1,11 @@
-export type UserType = Record<string, any> | null;
+export type UserRole = 'employee' | 'manager' | 'admin';
+
+export type UserType = {
+  UserId?: string;
+  Name?: string;
+  role?: UserRole;
+  [key: string]: any;
+} | null;
 
 export type AuthState = {
   user: UserType;

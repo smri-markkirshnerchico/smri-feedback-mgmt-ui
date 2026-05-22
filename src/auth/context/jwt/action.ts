@@ -53,5 +53,6 @@ export const signOut = async (): Promise<void> => {
   } finally {
     setAccess(null);
     setRefresh(null);
+    localStorage.removeItem('USER_ROLE');
   }
 };

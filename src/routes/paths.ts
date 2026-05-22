@@ -16,6 +16,15 @@ export const paths = {
   },
   // MAIN
   main: {
-    home: `${ROOTS.MAIN}/home`
+    home: `${ROOTS.MAIN}/home`,
+    employee: {
+      dashboard: `${ROOTS.MAIN}/employee/dashboard`,
+    },
+    manager: {
+      dashboard: `${ROOTS.MAIN}/manager/dashboard`,
+    },
+    admin: {
+      dashboard: `${ROOTS.MAIN}/admin/dashboard`,
+    },
   },
 };
