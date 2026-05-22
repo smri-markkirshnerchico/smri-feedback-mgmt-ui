@@ -121,10 +121,10 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
         sx={{ mb: 4 }}
       >
         <Box>
-          <Typography variant="h4" sx={{ color: 'primary.main', mb: 0.5 }}>
+          <Typography variant="h4" sx={{ color: 'primary.main', mb: 0.5, fontFamily: 'Henry Sans' }}>
             Reviews & Feedback
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary', maxWidth: 520 }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary', maxWidth: 620 }}>
             Supporting employee development through regular reviews and open communication
           </Typography>
         </Box>
@@ -133,31 +133,35 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
           variant="contained"
           color="primary"
           endIcon={<Iconify icon="mingcute:add-line" />}
-          sx={{ borderRadius: 1.5, flexShrink: 0 }}
+          sx={{ borderRadius: 1.5, flexShrink: 0, px:2, py:1.5 }}
         >
           Start your Feedback
         </Button>
       </Stack>
 
-      <Tabs
-        value={currentTab}
-        onChange={handleChangeTab}
-        sx={{
-          mb: 3,
-          '& .MuiTabs-indicator': {
-            height: 3,
-            borderRadius: '3px 3px 0 0',
-            bgcolor: 'primary.main',
-          },
-        }}
-      >
-        {(Object.keys(TAB_LABELS) as ReviewFeedbackTab[]).map((tab) => (
-          <Tab key={tab} value={tab} label={renderTabLabel(tab)} sx={{ minHeight: 48, px: 0, mr: 4 }} />
-        ))}
-      </Tabs>
-
       <Card sx={{ borderRadius: 2, overflow: 'hidden' }}>
-        <Box sx={{ p: 2.5, pb: 0 }}>
+        <Box sx={{ p: 2, pt:1, pl:3 }}>
+          <Tabs
+            value={currentTab}
+            onChange={handleChangeTab}
+            sx={{
+              mb: 1,
+              borderBottom: '1px solid',
+              borderBottomColor: 'divider',
+              '& .MuiTabs-indicator': {
+                height: 3,
+                borderRadius: '3px 3px 0 0',
+                bgcolor: 'primary.main',
+              },
+            }}
+          >
+            {(Object.keys(TAB_LABELS) as ReviewFeedbackTab[]).map((tab) => (
+              <Tab key={tab} value={tab} label={renderTabLabel(tab)} sx={{ minHeight: 48, px: 0, mr: 1 }} />
+            ))}
+          </Tabs>
+        </Box>
+
+        <Box sx={{ px: 2, py:0, pb: 0 }}>
           <TextField
             fullWidth
             placeholder="Search"
