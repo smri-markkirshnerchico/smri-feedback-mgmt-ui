@@ -1,6 +1,10 @@
 'use client';
 
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, lazy, Suspense } from 'react';
+
+const StartFeedbackModal = lazy(() =>
+  import('../start-feedback-modal').then((m) => ({ default: m.StartFeedbackModal }))
+);
 import { useRouter } from 'next/navigation';
 
 import Box from '@mui/material/Box';
@@ -59,6 +63,7 @@ type Props = {
 export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   const router = useRouter();
   const [search, setSearch] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
 
   const tableData = useMemo(() => getReviewFeedbackByTab(currentTab), [currentTab]);
 
@@ -130,6 +135,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
         <Button
           variant="contained"
           color="primary"
+          onClick={() => setModalOpen(true)}
           endIcon={<Iconify icon="mingcute:add-line" />}
           sx={{ borderRadius: 1.5, flexShrink: 0, px:2, py:1.5 }}
         >
@@ -211,6 +217,10 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
           </Scrollbar>
         </Box>
       </Card>
+
+      <Suspense fallback={null}>
+        <StartFeedbackModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      </Suspense>
     </MainContent>
   );
 }

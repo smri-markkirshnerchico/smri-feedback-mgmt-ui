@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -7,9 +9,13 @@ import Stack from '@mui/material/Stack';
 
 import { CONFIG } from 'src/global-config';
 
+import { StartFeedbackModal } from './start-feedback-modal';
+
 // ----------------------------------------------------------------------
 
 export function EmployeeMyFeedbackView() {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <Box sx={{ p: '40px' }}>
       {/* Header Section */}
@@ -41,6 +47,7 @@ export function EmployeeMyFeedbackView() {
         </Box>
         <Button
           variant="contained"
+          onClick={() => setModalOpen(true)}
           sx={{
             fontFamily: 'Henry Sans',
             backgroundColor: '#102FF6',
@@ -98,6 +105,7 @@ export function EmployeeMyFeedbackView() {
         {/* Button */}
         <Button
           variant="outlined"
+          onClick={() => setModalOpen(true)}
           sx={{
             fontFamily: 'Henry Sans',
             borderColor: '#102FF6',
@@ -118,6 +126,8 @@ export function EmployeeMyFeedbackView() {
           Start your Feedback
         </Button>
       </Box>
+
+      <StartFeedbackModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </Box>
   );
 }
