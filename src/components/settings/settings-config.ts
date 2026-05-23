@@ -12,7 +12,7 @@ export const defaultSettings: SettingsState = {
   direction: themeConfig.direction,
   contrast: 'hight',
   navLayout: 'mini',
-  primaryColor: 'preset1',
+  primaryColor: 'default',
   navColor: 'integrate',
   compactLayout: false,
   fontSize: 15,
