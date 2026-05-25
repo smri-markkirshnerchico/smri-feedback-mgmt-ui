@@ -204,7 +204,7 @@ export function JwtSignInView() {
 
         <Typography
           variant="body2"
-          sx={{ color: 'text.secondary', textAlign: 'center', maxWidth: 320 }}
+          sx={{ color: 'text.secondary', textAlign: 'center', maxWidth: 360 }}
         >
           Log in to continue with feedback management workspace
         </Typography>
