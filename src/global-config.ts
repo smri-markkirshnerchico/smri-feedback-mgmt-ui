@@ -15,6 +15,7 @@ export type ConfigValue = {
   domainUrl: string;
   iconifyUrl: string;
   moduleId: string;
+  feedbackAppId: string;
   devRole: 'employee' | 'manager' | 'admin';
   auth: {
     method: 'jwt';
@@ -36,6 +37,7 @@ export const CONFIG: ConfigValue = {
   domainUrl: process.env.NEXT_PUBLIC_DOMAIN_URL ?? '',
   iconifyUrl: process.env.NEXT_PUBLIC_ICONIFY_URL ?? '',
   moduleId: process.env.NEXT_PUBLIC_MODULE_ID ?? '',
+  feedbackAppId: process.env.NEXT_PUBLIC_FEEDBACK_APP_ID ?? '',
   /**
    * Auth
    * @method jwt

@@ -20,6 +20,9 @@ export const endpoints = {
       },
       module: `${ROOTS.Core}${ROOTS.Admin}/Minimals/Module`,
       menu: `${ROOTS.Core}${ROOTS.Admin}/Minimals/Menu`,
+      user: {
+        list: `${ROOTS.Core}${ROOTS.Admin}/User/GetAllUsers`
+      },
       session: {
         companies: `${ROOTS.Core}${ROOTS.Admin}${ROOTS.Session}/Companies`,
         branches: `${ROOTS.Core}${ROOTS.Admin}${ROOTS.Session}/Branches`

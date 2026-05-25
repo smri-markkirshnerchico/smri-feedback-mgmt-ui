@@ -1,6 +1,7 @@
 'use client';
 
-import { forwardRef, useState } from 'react';
+import { forwardRef, useState, useMemo } from 'react';
+import useSWR from 'swr';
 
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
@@ -14,7 +15,12 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
 import type { TransitionProps } from '@mui/material/transitions';
+
+import { CONFIG } from 'src/global-config';
+import axios from 'src/lib/axios';
+import { endpoints } from 'src/api/endpoints';
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +30,20 @@ const SlideUp = forwardRef(function SlideUp(
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+// ----------------------------------------------------------------------
+
+interface Employee {
+  UserId: string;
+  EmpId: string;
+  FirstName: string;
+  MiddleName: string;
+  LastName: string;
+  EmailAddress: string;
+  PositionDesc: string | null;
+  IsActive: boolean;
+  IsResigned: boolean;
+}
 
 // ----------------------------------------------------------------------
 
@@ -52,6 +72,23 @@ export function StartFeedbackModal({ open, onClose }: Props) {
   const [year, setYear] = useState('2026');
   const [anonymous, setAnonymous] = useState(false);
   const [rows, setRows] = useState<ProviderRow[]>(Array.from({ length: 5 }, () => ({ ...EMPTY_ROW })));
+
+  const { data: employeesData = [], isLoading: employeesLoading } = useSWR(
+    open ? `${endpoints.core.admin.user.list}?appId=${CONFIG.feedbackAppId}` : null,
+    async (url) => {
+      const res = await axios.get<Employee[]>(url);
+      return res.data.filter((emp) => emp.IsActive && !emp.IsResigned) || [];
+    }
+  );
+
+  const activeEmployees = useMemo(
+    () => employeesData.map((emp) => ({
+      id: emp.UserId,
+      name: `${emp.FirstName} ${emp.MiddleName} ${emp.LastName}`.trim(),
+      position: emp.PositionDesc || 'N/A',
+    })),
+    [employeesData]
+  );
 
   const isProjectCategory = category === 'Project Related Feedback';
   const isValid = rows.every((r) => r.employee && r.reason && (!isProjectCategory || r.projectName));
@@ -280,17 +317,34 @@ export function StartFeedbackModal({ open, onClose }: Props) {
 
               {/* Employee + Position */}
               <Stack gap="24px" sx={{ width: '400px', flexShrink: 0 }}>
-                <FormControl fullWidth>
-                  <InputLabel sx={labelSx}>Select Employee</InputLabel>
+                <FormControl fullWidth disabled={employeesLoading}>
+                  <InputLabel sx={labelSx}>
+                    {employeesLoading ? 'Loading employees...' : 'Select Employee'}
+                  </InputLabel>
                   <Select
                     value={row.employee}
-                    onChange={(e) => updateRow(index, 'employee', e.target.value)}
+                    onChange={(e) => {
+                      const selectedEmp = activeEmployees.find((emp) => emp.id === e.target.value);
+                      updateRow(index, 'employee', e.target.value);
+                      if (selectedEmp) {
+                        updateRow(index, 'position', selectedEmp.position);
+                      }
+                    }}
                     label="Select Employee"
                     sx={selectSx}
                   >
-                    <MenuItem value="John Doe">John Doe</MenuItem>
-                    <MenuItem value="Jane Smith">Jane Smith</MenuItem>
-                    <MenuItem value="Alex Johnson">Alex Johnson</MenuItem>
+                    {employeesLoading ? (
+                      <MenuItem disabled>
+                        <CircularProgress size={20} sx={{ mr: 1 }} />
+                        Loading...
+                      </MenuItem>
+                    ) : (
+                      activeEmployees.map((emp) => (
+                        <MenuItem key={emp.id} value={emp.id}>
+                          {emp.name}
+                        </MenuItem>
+                      ))
+                    )}
                   </Select>
                 </FormControl>
 
@@ -300,12 +354,10 @@ export function StartFeedbackModal({ open, onClose }: Props) {
                     value={row.position}
                     onChange={(e) => updateRow(index, 'position', e.target.value)}
                     label="Position"
+                    disabled
                     sx={selectSx}
                   >
-                    <MenuItem value="Software Engineer">Software Engineer</MenuItem>
-                    <MenuItem value="Product Manager">Product Manager</MenuItem>
-                    <MenuItem value="Designer">Designer</MenuItem>
-                    <MenuItem value="QA Engineer">QA Engineer</MenuItem>
+                    {row.position && <MenuItem value={row.position}>{row.position}</MenuItem>}
                   </Select>
                 </FormControl>
               </Stack>
