@@ -15,6 +15,7 @@ import DialogContent from '@mui/material/DialogContent';
 type Props = {
   open: boolean;
   onClose: () => void;
+  isEdit?: boolean;
   employeeName?: string;
   initialRemarks?: string;
   onSave?: (remarks: string) => void;
@@ -24,6 +25,7 @@ type Props = {
 export function AddCommentDialog({
   open,
   onClose,
+  isEdit = false,
   employeeName,
   initialRemarks = '',
   onSave,
@@ -75,7 +77,7 @@ export function AddCommentDialog({
         }}
       >
         <Typography variant="h6" sx={{ fontWeight: 700, color: 'text.primary' }}>
-          Add Comment
+          {isEdit ? 'Edit Comment' : 'Add Comment'}
         </Typography>
       </Box>
 
@@ -165,7 +167,7 @@ export function AddCommentDialog({
               '&:hover': { bgcolor: '#0919d4' },
             }}
           >
-            Add Comment
+            {isEdit ? 'Update' : 'Add Comment'}
           </Button>
         </Stack>
       </Stack>

@@ -17,6 +17,34 @@ import { usePathname } from 'src/routes/hooks';
 
 import { getMenus } from 'src/api/core/menu';
 
+import type { NavSectionProps } from 'src/components/nav-section';
+
+// ----------------------------------------------------------------------
+
+type NavItem = NonNullable<NavSectionProps['data']>[number]['items'][number];
+
+function normalizePath(path: string) {
+  return path.replace(/\/$/, '');
+}
+
+function collectMenuPaths(items: NavItem[] = []): string[] {
+  return items.flatMap((item) => {
+    const paths = item.path ? [normalizePath(item.path)] : [];
+    const childPaths = item.children ? collectMenuPaths(item.children) : [];
+    return [...paths, ...childPaths];
+  });
+}
+
+function canAccessPath(menu: NavSectionProps['data'], pathname: string): boolean {
+  const normalizedPathname = normalizePath(pathname);
+  const allowedPaths = (menu ?? []).flatMap((section) => collectMenuPaths(section.items));
+
+  return allowedPaths.some((allowedPath) => {
+    if (normalizedPathname === allowedPath) return true;
+    return normalizedPathname.startsWith(`${allowedPath}/`);
+  });
+}
+
 // ----------------------------------------------------------------------
 
 export type RoleBasedGuardProp = {
@@ -31,17 +59,9 @@ export function RoleBasedGuard({ children, sx }: Readonly<RoleBasedGuardProp>) {
 
   const { navData, navDataLoading } = getMenus();
 
-  const pathname = usePathname().replace(/\/$/, "");
+  const pathname = usePathname();
 
-  const hasMatchingPath = (menu: typeof navData, path: string): boolean => {
-    return menu.some(list =>
-      list.items.some(item =>
-        item.path === path || (item.children && hasMatchingPath([{ items: item.children }], path))
-      )
-    );
-  };
-
-  const checkAccess = hasMatchingPath(navData, pathname);
+  const checkAccess = canAccessPath(navData, pathname);
   
   if (navDataLoading) {
     return <LoadingScreen />

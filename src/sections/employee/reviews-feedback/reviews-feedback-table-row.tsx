@@ -30,6 +30,9 @@ function getStatusColor(status: IReviewFeedbackItem['status'] | 'rejected') {
 }
 
 export function ReviewsFeedbackTableRow({ row, showStartFeedbackButton, onStartFeedback }: Readonly<Props>) {
+  const employeeName = row.employeeName ?? 'Unknown';
+  const employeeInitial = employeeName.charAt(0).toUpperCase();
+
   return (
     <TableRow
       sx={{
@@ -49,12 +52,12 @@ export function ReviewsFeedbackTableRow({ row, showStartFeedbackButton, onStartF
         <Stack direction="row" alignItems="center" spacing={1.5}>
           <Avatar
             src={row.employeeAvatarUrl}
-            alt={row.employeeName}
+            alt={employeeName}
             sx={{ width: 40, height: 40 }}
           >
-            {row.employeeName.charAt(0)}
+            {employeeInitial}
           </Avatar>
-          <Typography variant="subtitle2">{row.employeeName}</Typography>
+          <Typography variant="subtitle2">{employeeName}</Typography>
         </Stack>
       </TableCell>
 
@@ -83,7 +86,10 @@ export function ReviewsFeedbackTableRow({ row, showStartFeedbackButton, onStartF
             variant="outlined"
             color="primary"
             endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
-            onClick={onStartFeedback}
+            onClick={(event) => {
+              event.stopPropagation();
+              onStartFeedback?.();
+            }}
             sx={{
               borderRadius: 1,
               px: 2.5,

@@ -544,6 +544,7 @@ export function FeedbackListApprovalModal({
       <AddCommentDialog
         open={commentDialogOpen}
         onClose={handleCloseComment}
+        isEdit={Boolean(activeProviderId && providerComments[activeProviderId])}
         employeeName={activeProvider?.employeeName}
         initialRemarks={activeProviderId ? providerComments[activeProviderId] ?? '' : ''}
         onSave={handleSaveComment}

@@ -30,6 +30,8 @@ import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 import { TableNoData, TableHeadCustom, type TableHeadCellProps } from 'src/components/table';
 
+import { mapFeedbackAssignments } from 'src/sections/reviews-feedback/map-feedback-assignment';
+
 import { TAB_COUNTS, getReviewFeedbackByTab } from './mock-data';
 import { ReviewsFeedbackTableRow } from './reviews-feedback-table-row';
 
@@ -54,22 +56,6 @@ const TABLE_HEAD_NEEDS_REVIEW: TableHeadCellProps[] = [
 ];
 
 type EmployeeReviewFeedbackTab = 'my-feedback' | 'needs-my-review';
-
-interface FeedbackAssignmentDto {
-  AssignmentId: string;
-  FeedbackRequestId: string;
-  EmployeeToReviewId: string;
-  EmployeeToReviewName: string;
-  ReviewerId: string;
-  ReviewerName: string;
-  Category: string;
-  Year: string;
-  Position: string;
-  ProjectName?: string;
-  Reason: string;
-  Status: string;
-  CreatedAt: string;
-}
 
 interface FeedbackRequestDto {
   FeedbackId: string;
@@ -102,25 +88,11 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
 
-  const { data: needsMyReviewFeedback = [], isLoading: needsMyReviewLoading } = useSWR(
+  const { data: needsMyReviewFeedback = [] } = useSWR(
     endpoints.application.feedbackAssignment.root,
     async (url) => {
-      const res = await axios.get<FeedbackAssignmentDto[]>(url);
-      return res.data
-        .filter((a) => (a as any).status === 'pending' || a.Status === 'pending')
-        .map((a) => ({
-          id: a.AssignmentId,
-          employeeName: a.EmployeeToReviewName,
-          employeeAvatarUrl: undefined,
-          category: `${a.Category} ${a.Year}`,
-          dateInitiated: a.CreatedAt,
-          status: 'in-progress' as const,
-          statusLabel: 'Pending',
-          completion: '0/1',
-          reviewerAvatarUrls: [],
-          avgScore: null,
-          feedbackAssignment: a,
-        }));
+      const res = await axios.get<unknown[]>(url);
+      return mapFeedbackAssignments(res.data);
     }
   );
 
@@ -160,8 +132,8 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
 
     return tableData.filter(
       (item) =>
-        item.employeeName.toLowerCase().includes(keyword) ||
-        item.category.toLowerCase().includes(keyword)
+        (item.employeeName ?? '').toLowerCase().includes(keyword) ||
+        (item.category ?? '').toLowerCase().includes(keyword)
     );
   }, [search, tableData]);
 
@@ -303,9 +275,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
                     showStartFeedbackButton={currentTab === 'needs-my-review'}
                     onStartFeedback={
                       currentTab === 'needs-my-review'
-                        ? () => {
-                            // TODO: Open modal to start providing feedback
-                          }
+                        ? () => router.push(paths.main.employee.provideFeedback(row.id))
                         : undefined
                     }
                   />
