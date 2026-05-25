@@ -9,6 +9,7 @@ import Slide from '@mui/material/Slide';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -16,6 +17,7 @@ import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
+import Alert from '@mui/material/Alert';
 import type { TransitionProps } from '@mui/material/transitions';
 
 import { CONFIG } from 'src/global-config';
@@ -72,6 +74,8 @@ export function StartFeedbackModal({ open, onClose }: Props) {
   const [year, setYear] = useState('2026');
   const [anonymous, setAnonymous] = useState(false);
   const [rows, setRows] = useState<ProviderRow[]>(Array.from({ length: 5 }, () => ({ ...EMPTY_ROW })));
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const { data: employeesData = [], isLoading: employeesLoading } = useSWR(
     open ? `${endpoints.core.admin.user.list}?appId=${CONFIG.feedbackAppId}` : null,
@@ -95,6 +99,38 @@ export function StartFeedbackModal({ open, onClose }: Props) {
 
   const updateRow = (index: number, field: keyof ProviderRow, value: string) => {
     setRows((prev) => prev.map((r, i) => (i === index ? { ...r, [field]: value } : r)));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setSubmitError(null);
+      setSubmitting(true);
+
+      await axios.post(endpoints.application.feedback.root, {
+        Category: category,
+        Year: year,
+        Anonymous: anonymous,
+        Providers: rows
+          .filter((r) => r.employee)
+          .map((r) => {
+            const emp = activeEmployees.find((e) => e.id === r.employee);
+            return {
+              UserId: r.employee,
+              Name: emp?.name,
+              Position: r.position,
+              ProjectName: r.projectName || null,
+              Reason: r.reason,
+            };
+          }),
+      });
+
+      setSubmitting(false);
+      onClose();
+    } catch (error) {
+      setSubmitting(false);
+      const message = error instanceof Error ? error.message : 'Failed to submit feedback';
+      setSubmitError(message);
+    }
   };
 
   return (
@@ -170,8 +206,10 @@ export function StartFeedbackModal({ open, onClose }: Props) {
             Cancel
           </Button>
 
-          <Button
-            disabled={!isValid}
+          <LoadingButton
+            disabled={!isValid || submitting}
+            loading={submitting}
+            onClick={handleSubmit}
             sx={{
               fontWeight: 700,
               fontSize: '17px',
@@ -189,12 +227,18 @@ export function StartFeedbackModal({ open, onClose }: Props) {
             }}
           >
             Submit for Approval
-          </Button>
+          </LoadingButton>
         </Stack>
       </Box>
 
       {/* Scrollable Content */}
       <Box sx={{ flex: 1, overflowY: 'auto', px: '24px', pt: '20px', pb: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+        {submitError && (
+          <Alert severity="error" onClose={() => setSubmitError(null)}>
+            {submitError}
+          </Alert>
+        )}
 
         {/* Top Meta Filters */}
         <Stack direction="row" alignItems="center" gap="24px">

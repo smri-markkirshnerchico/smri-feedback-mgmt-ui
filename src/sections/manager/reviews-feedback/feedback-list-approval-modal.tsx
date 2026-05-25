@@ -1,6 +1,8 @@
 'use client';
 
 import { forwardRef, useCallback, useState } from 'react';
+import axios from 'src/lib/axios';
+import { endpoints } from 'src/api/endpoints';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -8,6 +10,7 @@ import Dialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 import Select from '@mui/material/Select';
 import Avatar from '@mui/material/Avatar';
 import MenuItem from '@mui/material/MenuItem';
@@ -38,6 +41,11 @@ const SlideUp = forwardRef(function SlideUp(
 
 // ----------------------------------------------------------------------
 
+interface FeedbackRequestDto {
+  FeedbackId: string;
+  Providers: Array<{ UserId: string; Name: string; Position: string; ProjectName?: string; Reason: string }>;
+}
+
 type Props = {
   open: boolean;
   onClose: () => void;
@@ -45,6 +53,9 @@ type Props = {
   providers?: IFeedbackApprovalProvider[];
   onApprove?: () => void;
   onReject?: () => void;
+  feedbackRequest?: FeedbackRequestDto;
+  onApproveSuccess?: () => void;
+  onRejectSuccess?: () => void;
 };
 
 export function FeedbackListApprovalModal({
@@ -54,10 +65,15 @@ export function FeedbackListApprovalModal({
   providers = FEEDBACK_APPROVAL_PROVIDERS,
   onApprove,
   onReject,
+  feedbackRequest,
+  onApproveSuccess,
+  onRejectSuccess,
 }: Readonly<Props>) {
   const [commentDialogOpen, setCommentDialogOpen] = useState(false);
   const [activeProviderId, setActiveProviderId] = useState<string | null>(null);
   const [providerComments, setProviderComments] = useState<Record<string, string>>({});
+  const [approving, setApproving] = useState(false);
+  const [rejecting, setRejecting] = useState(false);
 
   const activeProvider = providers.find((p) => p.id === activeProviderId);
 
@@ -88,14 +104,36 @@ export function FeedbackListApprovalModal({
     });
   }, [activeProviderId]);
 
-  const handleApprove = () => {
-    onApprove?.();
-    onClose();
+  const handleApprove = async () => {
+    const feedbackId = feedbackRequest?.FeedbackId || item?.id;
+    if (!feedbackId) return;
+
+    try {
+      setApproving(true);
+      await axios.patch(endpoints.application.feedback.approve(feedbackId));
+      onApprove?.();
+      onApproveSuccess?.();
+    } catch (error) {
+      console.error('Approve failed:', error);
+    } finally {
+      setApproving(false);
+    }
   };
 
-  const handleReject = () => {
-    onReject?.();
-    onClose();
+  const handleReject = async () => {
+    const feedbackId = feedbackRequest?.FeedbackId || item?.id;
+    if (!feedbackId) return;
+
+    try {
+      setRejecting(true);
+      await axios.patch(endpoints.application.feedback.reject(feedbackId));
+      onReject?.();
+      onRejectSuccess?.();
+    } catch (error) {
+      console.error('Reject failed:', error);
+    } finally {
+      setRejecting(false);
+    }
   };
 
   if (!item) return null;
@@ -103,6 +141,17 @@ export function FeedbackListApprovalModal({
   const categoryLabel = item.category.replace(/\s+\d{4}$/, '').trim() || item.category;
   const yearMatch = item.category.match(/\d{4}/);
   const year = yearMatch?.[0] ?? '2026';
+
+  const displayProviders = feedbackRequest?.Providers
+    ? feedbackRequest.Providers.map((p, idx) => ({
+        id: String(idx + 1),
+        employeeName: p.Name,
+        employeeAvatarUrl: undefined,
+        position: p.Position,
+        projectName: p.ProjectName || '',
+        reason: p.Reason,
+      }))
+    : providers;
 
   return (
     <Dialog
@@ -167,8 +216,9 @@ export function FeedbackListApprovalModal({
             Cancel
           </Button>
 
-          <Button
+          <LoadingButton
             onClick={handleReject}
+            loading={rejecting}
             variant="outlined"
             startIcon={<Iconify icon="mingcute:close-line" width={18} sx={{ color: '#FF5630' }} />}
             sx={{
@@ -187,10 +237,11 @@ export function FeedbackListApprovalModal({
             }}
           >
             Reject List
-          </Button>
+          </LoadingButton>
 
-          <Button
+          <LoadingButton
             onClick={handleApprove}
+            loading={approving}
             variant="contained"
             startIcon={<Iconify icon="eva:checkmark-circle-2-fill" width={20} />}
             sx={{
@@ -204,7 +255,7 @@ export function FeedbackListApprovalModal({
             }}
           >
             Approve List
-          </Button>
+          </LoadingButton>
         </Stack>
       </Box>
 
@@ -340,7 +391,7 @@ export function FeedbackListApprovalModal({
 
         <Box sx={{ borderTop: '1px dashed', borderColor: 'divider', pt: 1 }} />
 
-        {providers.map((provider, index) => (
+        {displayProviders.map((provider, index) => (
           <Box key={provider.id}>
             <Stack direction="row" alignItems="flex-start" spacing={3}>
               <Box
@@ -483,7 +534,7 @@ export function FeedbackListApprovalModal({
               )}
             </Stack>
 
-            {index < providers.length - 1 && (
+            {index < displayProviders.length - 1 && (
               <Box sx={{ mt: 3, borderBottom: '1px dashed', borderColor: 'divider' }} />
             )}
           </Box>

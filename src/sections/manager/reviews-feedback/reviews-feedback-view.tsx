@@ -4,6 +4,7 @@ import type { IReviewFeedbackItem, ReviewFeedbackTab } from 'src/types/review-fe
 
 import { useMemo, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -18,6 +19,8 @@ import Typography from '@mui/material/Typography';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { paths } from 'src/routes/paths';
+import { endpoints } from 'src/api/endpoints';
+import axios from 'src/lib/axios';
 
 import { MainContent } from 'src/layouts/main';
 
@@ -59,13 +62,50 @@ type Props = {
   currentTab: ReviewFeedbackTab;
 };
 
+interface FeedbackRequestDto {
+  FeedbackId: string;
+  RequestorName: string;
+  Category: string;
+  Year: string;
+  Status: string;
+  CreatedAt: string;
+  Providers: Array<{ UserId: string; Name: string; Position: string; ProjectName?: string; Reason: string }>;
+}
+
 export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [approvalOpen, setApprovalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState<IReviewFeedbackItem | null>(null);
 
-  const tableData = useMemo(() => getReviewFeedbackByTab(currentTab), [currentTab]);
+  const { data: teamFeedback = [], isLoading: teamFeedbackLoading, mutate: mutateTeamFeedback } = useSWR(
+    currentTab === 'my-teams-review' ? endpoints.application.feedback.root : null,
+    async (url) => {
+      const res = await axios.get<FeedbackRequestDto[]>(url);
+      return res.data
+        .filter((f) => f.Status === 'for-your-approval')
+        .map((f) => ({
+          id: f.FeedbackId,
+          employeeName: f.RequestorName,
+          employeeAvatarUrl: undefined,
+          category: `${f.Category} ${f.Year}`,
+          dateInitiated: f.CreatedAt,
+          status: f.Status as 'for-your-approval',
+          statusLabel: 'For your Approval',
+          completion: `0/${f.Providers.length}`,
+          reviewerAvatarUrls: [],
+          avgScore: null,
+          feedbackRequest: f, // Store the original data
+        })) as (IReviewFeedbackItem & { feedbackRequest: FeedbackRequestDto })[];
+    }
+  );
+
+  const tableData = useMemo(() => {
+    if (currentTab === 'my-teams-review') {
+      return teamFeedback;
+    }
+    return getReviewFeedbackByTab(currentTab);
+  }, [currentTab, teamFeedback]);
 
   const dataFiltered = useMemo(() => {
     const keyword = search.trim().toLowerCase();
@@ -100,7 +140,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   }, []);
 
   const renderTabLabel = (tab: ReviewFeedbackTab) => {
-    const count = TAB_COUNTS[tab];
+    const count = tab === 'my-teams-review' ? teamFeedback.length : TAB_COUNTS[tab];
     const isActive = currentTab === tab;
 
     return (
@@ -243,6 +283,15 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
         open={approvalOpen}
         onClose={handleCloseApproval}
         item={selectedRow}
+        feedbackRequest={(selectedRow as any)?.feedbackRequest}
+        onApproveSuccess={() => {
+          handleCloseApproval();
+          mutateTeamFeedback();
+        }}
+        onRejectSuccess={() => {
+          handleCloseApproval();
+          mutateTeamFeedback();
+        }}
       />
     </MainContent>
   );

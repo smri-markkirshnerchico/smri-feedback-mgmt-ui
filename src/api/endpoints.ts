@@ -30,6 +30,11 @@ export const endpoints = {
     }
   },
   application: {
-    root: `/App`
+    root: `/App`,
+    feedback: {
+      root: `/Feedback`,
+      approve: (id: string) => `/Feedback/${id}/approve`,
+      reject: (id: string) => `/Feedback/${id}/reject`,
+    }
   }
 };
