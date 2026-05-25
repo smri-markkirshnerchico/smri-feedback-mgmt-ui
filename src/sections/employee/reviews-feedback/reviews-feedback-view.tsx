@@ -50,6 +50,7 @@ const TABLE_HEAD_NEEDS_REVIEW: TableHeadCellProps[] = [
   { id: 'category', label: 'Category', width: 220 },
   { id: 'dateInitiated', label: 'Date Initiated', width: 140 },
   { id: 'status', label: 'Status', width: 160 },
+  { id: 'action', label: '', width: 180 },
 ];
 
 type EmployeeReviewFeedbackTab = 'my-feedback' | 'needs-my-review';
@@ -287,7 +288,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
                 '& .MuiTableCell-head': {
                   color: 'text.secondary',
                   fontWeight: 600,
-                  bgcolor: 'transparent',
+                  bgcolor: '#f5f5f5',
                   borderBottom: 'none',
                 },
               }}

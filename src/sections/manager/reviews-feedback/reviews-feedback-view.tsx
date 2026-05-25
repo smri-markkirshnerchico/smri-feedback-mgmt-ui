@@ -295,7 +295,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
                 '& .MuiTableCell-head': {
                   color: 'text.secondary',
                   fontWeight: 600,
-                  bgcolor: 'transparent',
+                  bgcolor: '#f5f5f5',
                   borderBottom: 'none',
                 },
               }}
