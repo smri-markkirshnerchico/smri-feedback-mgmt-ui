@@ -69,6 +69,7 @@ interface FeedbackRequestDto {
   Year: string;
   Status: string;
   CreatedAt: string;
+  ApprovedAt?: string;
   Providers: Array<{ UserId: string; Name: string; Position: string; ProjectName?: string; Reason: string }>;
 }
 
