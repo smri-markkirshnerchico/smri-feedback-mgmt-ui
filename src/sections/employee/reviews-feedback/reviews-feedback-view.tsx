@@ -70,6 +70,16 @@ interface FeedbackAssignmentDto {
   CreatedAt: string;
 }
 
+interface FeedbackRequestDto {
+  FeedbackId: string;
+  RequestorName: string;
+  Category: string;
+  Year: string;
+  Status: string;
+  CreatedAt: string;
+  Providers: Array<{ UserId: string; Name: string; Position: string; ProjectName?: string; Reason: string }>;
+}
+
 const TAB_PATHS: Record<EmployeeReviewFeedbackTab, string> = {
   'my-feedback': paths.main.employee.myFeedback,
   'needs-my-review': paths.main.employee.needsMyReview,
@@ -113,12 +123,35 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
     }
   );
 
+  const { data: myFeedbackData = [], isLoading: myFeedbackLoading } = useSWR(
+    currentTab === 'my-feedback' ? `${endpoints.application.feedback.root}/my-feedback` : null,
+    async (url) => {
+      const res = await axios.get<FeedbackRequestDto[]>(url);
+      return res.data.map((f) => ({
+        id: f.FeedbackId,
+        employeeName: 'You',
+        employeeAvatarUrl: undefined,
+        category: `${f.Category} ${f.Year}`,
+        dateInitiated: f.CreatedAt,
+        status: (f.Status === 'approved' ? 'in-progress' : f.Status === 'rejected' ? 'rejected' : 'for-your-approval') as any,
+        statusLabel: f.Status === 'approved' ? 'Approved' : f.Status === 'rejected' ? 'List Rejected' : 'For Your Approval',
+        completion: `0/${f.Providers.length}`,
+        reviewerAvatarUrls: f.Providers.map((p) => p.Name),
+        avgScore: null,
+        feedbackRequest: f,
+      }));
+    }
+  );
+
   const tableData = useMemo(() => {
+    if (currentTab === 'my-feedback') {
+      return myFeedbackData;
+    }
     if (currentTab === 'needs-my-review') {
       return needsMyReviewFeedback;
     }
     return getReviewFeedbackByTab(currentTab);
-  }, [currentTab, needsMyReviewFeedback]);
+  }, [currentTab, myFeedbackData, needsMyReviewFeedback]);
 
   const dataFiltered = useMemo(() => {
     const keyword = search.trim().toLowerCase();
@@ -140,6 +173,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
 
   const renderTabLabel = (tab: EmployeeReviewFeedbackTab) => {
     let count = TAB_COUNTS[tab];
+    if (tab === 'my-feedback') count = myFeedbackData.length;
     if (tab === 'needs-my-review') count = needsMyReviewFeedback.length;
     const isActive = currentTab === tab;
 

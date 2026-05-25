@@ -22,9 +22,10 @@ type Props = {
   onStartFeedback?: () => void;
 };
 
-function getStatusColor(status: IReviewFeedbackItem['status']) {
+function getStatusColor(status: IReviewFeedbackItem['status'] | 'rejected') {
   if (status === 'for-your-approval') return 'warning';
   if (status === 'completed') return 'success';
+  if (status === 'rejected') return 'error';
   return 'info';
 }
 
@@ -113,8 +114,10 @@ export function ReviewsFeedbackTableRow({ row, showStartFeedbackButton, onStartF
                 },
               }}
             >
-              {row.reviewerAvatarUrls.map((url, index) => (
-                <Avatar key={url + index} src={url} alt={`Reviewer ${index + 1}`} />
+              {row.reviewerAvatarUrls.map((item, index) => (
+                <Avatar key={item + index} src={item.startsWith('http') ? item : undefined} alt={item}>
+                  {!item.startsWith('http') && item.charAt(0).toUpperCase()}
+                </Avatar>
               ))}
             </AvatarGroup>
           </TableCell>
