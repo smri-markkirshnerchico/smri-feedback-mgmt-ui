@@ -16,6 +16,7 @@ import { Label } from 'src/components/label';
 
 type Props = {
   row: IReviewFeedbackItem;
+  onClick?: () => void;
 };
 
 function getStatusColor(status: IReviewFeedbackItem['status']) {
@@ -24,15 +25,20 @@ function getStatusColor(status: IReviewFeedbackItem['status']) {
   return 'info';
 }
 
-export function ReviewsFeedbackTableRow({ row }: Readonly<Props>) {
+export function ReviewsFeedbackTableRow({ row, onClick }: Readonly<Props>) {
   return (
     <TableRow
+      onClick={onClick}
       sx={{
         '& > td': {
           border: 0,
           py: 2,
         },
         bgcolor: 'background.neutral',
+        ...(onClick && {
+          cursor: 'pointer',
+          '&:hover': { bgcolor: 'action.hover' },
+        }),
         '&:first-of-type td:first-of-type': { borderTopLeftRadius: 12, borderBottomLeftRadius: 12 },
         '&:first-of-type td:last-of-type': { borderTopRightRadius: 12, borderBottomRightRadius: 12 },
       }}

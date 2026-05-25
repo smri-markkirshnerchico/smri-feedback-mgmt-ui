@@ -1,4 +1,5 @@
 import type { IReviewFeedbackItem, ReviewFeedbackTab } from 'src/types/review-feedback';
+import type { IFeedbackApprovalProvider } from 'src/types/feedback-approval';
 
 import { CONFIG } from 'src/global-config';
 
@@ -37,3 +38,51 @@ export const TAB_COUNTS: Record<ReviewFeedbackTab, number> = {
 export function getReviewFeedbackByTab(tab: ReviewFeedbackTab): IReviewFeedbackItem[] {
   return TAB_DATA[tab];
 }
+
+// ----------------------------------------------------------------------
+
+const APPROVAL_REASON =
+  'I chose this employee to review my performance because they work closely with me on daily tasks and projects. Their feedback will help me understand how I can improve in areas that matter most to our team.';
+
+export const FEEDBACK_APPROVAL_PROVIDERS: IFeedbackApprovalProvider[] = [
+  {
+    id: '1',
+    employeeName: 'Guenevere De Guzman',
+    employeeAvatarUrl: avatar(2),
+    position: 'AVP',
+    projectName: 'Supply Chain DC Box',
+    reason: APPROVAL_REASON,
+  },
+  {
+    id: '2',
+    employeeName: 'Andrew Lee',
+    employeeAvatarUrl: avatar(3),
+    position: 'Department Manager',
+    projectName: 'Supply Chain DC Box',
+    reason: APPROVAL_REASON,
+  },
+  {
+    id: '3',
+    employeeName: 'Joy Alfonso',
+    employeeAvatarUrl: avatar(4),
+    position: 'ITS Developer',
+    projectName: 'Supply Chain DC Box',
+    reason: APPROVAL_REASON,
+  },
+  {
+    id: '4',
+    employeeName: 'Joy Alfonso',
+    employeeAvatarUrl: avatar(5),
+    position: 'ITS Developer',
+    projectName: 'Supply Chain DC Box',
+    reason: APPROVAL_REASON,
+  },
+  {
+    id: '5',
+    employeeName: 'Maria Santos',
+    employeeAvatarUrl: avatar(6),
+    position: 'Business Analyst',
+    projectName: 'Supply Chain DC Box',
+    reason: APPROVAL_REASON,
+  },
+];

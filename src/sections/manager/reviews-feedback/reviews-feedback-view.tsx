@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReviewFeedbackTab } from 'src/types/review-feedback';
+import type { IReviewFeedbackItem, ReviewFeedbackTab } from 'src/types/review-feedback';
 
 import { useMemo, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
@@ -27,6 +27,7 @@ import { TableNoData, TableHeadCustom, type TableHeadCellProps } from 'src/compo
 
 import { TAB_COUNTS, getReviewFeedbackByTab } from './mock-data';
 import { ReviewsFeedbackTableRow } from './reviews-feedback-table-row';
+import { FeedbackListApprovalModal } from './feedback-list-approval-modal';
 
 // ----------------------------------------------------------------------
 
@@ -61,6 +62,8 @@ type Props = {
 export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   const router = useRouter();
   const [search, setSearch] = useState('');
+  const [approvalOpen, setApprovalOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState<IReviewFeedbackItem | null>(null);
 
   const tableData = useMemo(() => getReviewFeedbackByTab(currentTab), [currentTab]);
 
@@ -81,6 +84,20 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
     },
     [router]
   );
+
+  const handleRowClick = useCallback(
+    (row: IReviewFeedbackItem) => {
+      if (currentTab !== 'my-teams-review') return;
+      setSelectedRow(row);
+      setApprovalOpen(true);
+    },
+    [currentTab]
+  );
+
+  const handleCloseApproval = useCallback(() => {
+    setApprovalOpen(false);
+    setSelectedRow(null);
+  }, []);
 
   const renderTabLabel = (tab: ReviewFeedbackTab) => {
     const count = TAB_COUNTS[tab];
@@ -204,7 +221,15 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
 
               <TableBody>
                 {dataFiltered.map((row) => (
-                  <ReviewsFeedbackTableRow key={row.id} row={row} />
+                  <ReviewsFeedbackTableRow
+                    key={row.id}
+                    row={row}
+                    onClick={
+                      currentTab === 'my-teams-review'
+                        ? () => handleRowClick(row)
+                        : undefined
+                    }
+                  />
                 ))}
 
                 <TableNoData notFound={!dataFiltered.length} />
@@ -213,6 +238,12 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
           </Scrollbar>
         </Box>
       </Card>
+
+      <FeedbackListApprovalModal
+        open={approvalOpen}
+        onClose={handleCloseApproval}
+        item={selectedRow}
+      />
     </MainContent>
   );
 }
