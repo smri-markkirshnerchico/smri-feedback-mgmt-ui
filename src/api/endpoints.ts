@@ -35,6 +35,9 @@ export const endpoints = {
       root: `/Feedback`,
       approve: (id: string) => `/Feedback/${id}/approve`,
       reject: (id: string) => `/Feedback/${id}/reject`,
+    },
+    feedbackAssignment: {
+      root: `/FeedbackAssignment`,
     }
   }
 };

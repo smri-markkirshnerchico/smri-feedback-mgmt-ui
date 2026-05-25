@@ -3,6 +3,7 @@ import type { IReviewFeedbackItem } from 'src/types/review-feedback';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
@@ -11,12 +12,15 @@ import AvatarGroup from '@mui/material/AvatarGroup';
 import { fDate, fTime } from 'src/utils/format-time';
 
 import { Label } from 'src/components/label';
+import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
 type Props = {
   row: IReviewFeedbackItem;
   onClick?: () => void;
+  showStartFeedbackButton?: boolean;
+  onStartFeedback?: () => void;
 };
 
 function getStatusColor(status: IReviewFeedbackItem['status']) {
@@ -25,7 +29,7 @@ function getStatusColor(status: IReviewFeedbackItem['status']) {
   return 'info';
 }
 
-export function ReviewsFeedbackTableRow({ row, onClick }: Readonly<Props>) {
+export function ReviewsFeedbackTableRow({ row, onClick, showStartFeedbackButton, onStartFeedback }: Readonly<Props>) {
   return (
     <TableRow
       onClick={onClick}
@@ -81,28 +85,51 @@ export function ReviewsFeedbackTableRow({ row, onClick }: Readonly<Props>) {
         </Label>
       </TableCell>
 
-      <TableCell>
-        <AvatarGroup
-          max={5}
-          sx={{
-            justifyContent: 'flex-start',
-            '& .MuiAvatar-root': {
-              width: 28,
-              height: 28,
-              fontSize: 12,
-              border: (theme) => `2px solid ${theme.vars.palette.background.paper}`,
-            },
-          }}
-        >
-          {row.reviewerAvatarUrls.map((url, index) => (
-            <Avatar key={url + index} src={url} alt={`Reviewer ${index + 1}`} />
-          ))}
-        </AvatarGroup>
-      </TableCell>
+      {showStartFeedbackButton ? (
+        <TableCell colSpan={2} sx={{ textAlign: 'right' }}>
+          <Button
+            variant="outlined"
+            color="primary"
+            endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
+            onClick={onStartFeedback}
+            sx={{
+              borderRadius: 1,
+              px: 2.5,
+              py: 1,
+              textTransform: 'none',
+              fontWeight: 600,
+              fontSize: '14px',
+            }}
+          >
+            Start Feedback
+          </Button>
+        </TableCell>
+      ) : (
+        <>
+          <TableCell>
+            <AvatarGroup
+              max={5}
+              sx={{
+                justifyContent: 'flex-start',
+                '& .MuiAvatar-root': {
+                  width: 28,
+                  height: 28,
+                  fontSize: 12,
+                  border: (theme) => `2px solid ${theme.vars.palette.background.paper}`,
+                },
+              }}
+            >
+              {row.reviewerAvatarUrls.map((url, index) => (
+                <Avatar key={url + index} src={url} alt={`Reviewer ${index + 1}`} />
+              ))}
+            </AvatarGroup>
+          </TableCell>
 
-      <TableCell>
-        <Box sx={{ typography: 'body2', color: 'text.disabled' }}>{row.avgScore ?? '--'}</Box>
-      </TableCell>
+          <TableCell>
+            <Box sx={{ typography: 'body2', color: 'text.disabled' }}>{row.avgScore ?? '--'}</Box>
+          </TableCell>
+        </>
+      )}
     </TableRow>
   );
 }

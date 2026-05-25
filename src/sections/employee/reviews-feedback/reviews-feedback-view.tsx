@@ -1,11 +1,14 @@
 'use client';
 
 import { useMemo, useState, useCallback, lazy, Suspense } from 'react';
+import useSWR from 'swr';
 
 const StartFeedbackModal = lazy(() =>
   import('../start-feedback-modal').then((m) => ({ default: m.StartFeedbackModal }))
 );
 import { useRouter } from 'next/navigation';
+import axios from 'src/lib/axios';
+import { endpoints } from 'src/api/endpoints';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -32,7 +35,7 @@ import { ReviewsFeedbackTableRow } from './reviews-feedback-table-row';
 
 // ----------------------------------------------------------------------
 
-const TABLE_HEAD: TableHeadCellProps[] = [
+const TABLE_HEAD_FEEDBACK: TableHeadCellProps[] = [
   { id: 'employee', label: 'Employee to be Reviewed', width: 240 },
   { id: 'category', label: 'Category', width: 220 },
   { id: 'dateInitiated', label: 'Date Initiated', width: 140 },
@@ -42,7 +45,30 @@ const TABLE_HEAD: TableHeadCellProps[] = [
   { id: 'avgScore', label: 'Avg. Score', width: 90 },
 ];
 
+const TABLE_HEAD_NEEDS_REVIEW: TableHeadCellProps[] = [
+  { id: 'employee', label: 'Employee to be Reviewed', width: 240 },
+  { id: 'category', label: 'Category', width: 220 },
+  { id: 'dateInitiated', label: 'Date Initiated', width: 140 },
+  { id: 'status', label: 'Status', width: 160 },
+];
+
 type EmployeeReviewFeedbackTab = 'my-feedback' | 'needs-my-review';
+
+interface FeedbackAssignmentDto {
+  AssignmentId: string;
+  FeedbackRequestId: string;
+  EmployeeToReviewId: string;
+  EmployeeToReviewName: string;
+  ReviewerId: string;
+  ReviewerName: string;
+  Category: string;
+  Year: string;
+  Position: string;
+  ProjectName?: string;
+  Reason: string;
+  Status: string;
+  CreatedAt: string;
+}
 
 const TAB_PATHS: Record<EmployeeReviewFeedbackTab, string> = {
   'my-feedback': paths.main.employee.myFeedback,
@@ -65,7 +91,34 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
 
-  const tableData = useMemo(() => getReviewFeedbackByTab(currentTab), [currentTab]);
+  const { data: needsMyReviewFeedback = [], isLoading: needsMyReviewLoading } = useSWR(
+    currentTab === 'needs-my-review' ? endpoints.application.feedbackAssignment.root : null,
+    async (url) => {
+      const res = await axios.get<FeedbackAssignmentDto[]>(url);
+      return res.data
+        .filter((a) => (a as any).status === 'pending' || a.Status === 'pending')
+        .map((a) => ({
+          id: a.AssignmentId,
+          employeeName: a.EmployeeToReviewName,
+          employeeAvatarUrl: undefined,
+          category: `${a.Category} ${a.Year}`,
+          dateInitiated: a.CreatedAt,
+          status: 'in-progress' as const,
+          statusLabel: 'Pending',
+          completion: '0/1',
+          reviewerAvatarUrls: [],
+          avgScore: null,
+          feedbackAssignment: a,
+        }));
+    }
+  );
+
+  const tableData = useMemo(() => {
+    if (currentTab === 'needs-my-review') {
+      return needsMyReviewFeedback;
+    }
+    return getReviewFeedbackByTab(currentTab);
+  }, [currentTab, needsMyReviewFeedback]);
 
   const dataFiltered = useMemo(() => {
     const keyword = search.trim().toLowerCase();
@@ -86,7 +139,8 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   );
 
   const renderTabLabel = (tab: EmployeeReviewFeedbackTab) => {
-    const count = TAB_COUNTS[tab];
+    let count = TAB_COUNTS[tab];
+    if (tab === 'needs-my-review') count = needsMyReviewFeedback.length;
     const isActive = currentTab === tab;
 
     return (
@@ -204,11 +258,22 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
                 },
               }}
             >
-              <TableHeadCustom headCells={TABLE_HEAD} />
+              <TableHeadCustom headCells={currentTab === 'needs-my-review' ? TABLE_HEAD_NEEDS_REVIEW : TABLE_HEAD_FEEDBACK} />
 
               <TableBody>
                 {dataFiltered.map((row) => (
-                  <ReviewsFeedbackTableRow key={row.id} row={row} />
+                  <ReviewsFeedbackTableRow
+                    key={row.id}
+                    row={row}
+                    showStartFeedbackButton={currentTab === 'needs-my-review'}
+                    onStartFeedback={
+                      currentTab === 'needs-my-review'
+                        ? () => {
+                            // TODO: Open modal to start providing feedback
+                          }
+                        : undefined
+                    }
+                  />
                 ))}
 
                 <TableNoData notFound={!dataFiltered.length} />

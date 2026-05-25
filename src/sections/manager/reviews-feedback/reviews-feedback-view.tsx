@@ -72,6 +72,22 @@ interface FeedbackRequestDto {
   Providers: Array<{ UserId: string; Name: string; Position: string; ProjectName?: string; Reason: string }>;
 }
 
+interface FeedbackAssignmentDto {
+  AssignmentId: string;
+  FeedbackRequestId: string;
+  EmployeeToReviewId: string;
+  EmployeeToReviewName: string;
+  ReviewerId: string;
+  ReviewerName: string;
+  Category: string;
+  Year: string;
+  Position: string;
+  ProjectName?: string;
+  Reason: string;
+  Status: string;
+  CreatedAt: string;
+}
+
 export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   const router = useRouter();
   const [search, setSearch] = useState('');
@@ -100,12 +116,37 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
     }
   );
 
+  const { data: needsMyReviewFeedback = [], isLoading: needsMyReviewLoading, mutate: mutateNeedsMyReview } = useSWR(
+    currentTab === 'needs-my-review' ? endpoints.application.feedbackAssignment.root : null,
+    async (url) => {
+      const res = await axios.get<FeedbackAssignmentDto[]>(url);
+      return res.data
+        .filter((a) => (a as any).status === 'pending' || a.Status === 'pending')
+        .map((a) => ({
+          id: a.AssignmentId,
+          employeeName: a.EmployeeToReviewName,
+          employeeAvatarUrl: undefined,
+          category: `${a.Category} ${a.Year}`,
+          dateInitiated: a.CreatedAt,
+          status: 'in-progress' as const,
+          statusLabel: 'Pending',
+          completion: '0/1',
+          reviewerAvatarUrls: [],
+          avgScore: null,
+          feedbackAssignment: a,
+        })) as (IReviewFeedbackItem & { feedbackAssignment: FeedbackAssignmentDto })[];
+    }
+  );
+
   const tableData = useMemo(() => {
     if (currentTab === 'my-teams-review') {
       return teamFeedback;
     }
+    if (currentTab === 'needs-my-review') {
+      return needsMyReviewFeedback;
+    }
     return getReviewFeedbackByTab(currentTab);
-  }, [currentTab, teamFeedback]);
+  }, [currentTab, teamFeedback, needsMyReviewFeedback]);
 
   const dataFiltered = useMemo(() => {
     const keyword = search.trim().toLowerCase();
@@ -140,7 +181,9 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   }, []);
 
   const renderTabLabel = (tab: ReviewFeedbackTab) => {
-    const count = tab === 'my-teams-review' ? teamFeedback.length : TAB_COUNTS[tab];
+    let count = TAB_COUNTS[tab];
+    if (tab === 'my-teams-review') count = teamFeedback.length;
+    if (tab === 'needs-my-review') count = needsMyReviewFeedback.length;
     const isActive = currentTab === tab;
 
     return (
@@ -267,6 +310,14 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
                     onClick={
                       currentTab === 'my-teams-review'
                         ? () => handleRowClick(row)
+                        : undefined
+                    }
+                    showStartFeedbackButton={currentTab === 'needs-my-review'}
+                    onStartFeedback={
+                      currentTab === 'needs-my-review'
+                        ? () => {
+                            // TODO: Open modal to start providing feedback
+                          }
                         : undefined
                     }
                   />
