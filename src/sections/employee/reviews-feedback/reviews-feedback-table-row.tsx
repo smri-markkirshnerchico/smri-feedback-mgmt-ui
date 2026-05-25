@@ -23,10 +23,10 @@ type Props = {
 };
 
 function getStatusColor(status: IReviewFeedbackItem['status'] | 'rejected') {
-  if (status === 'for-your-approval') return 'warning';
+  if (status === 'for-your-approval') return 'default';
   if (status === 'completed') return 'success';
   if (status === 'rejected') return 'error';
-  return 'info';
+  return 'default';
 }
 
 export function ReviewsFeedbackTableRow({ row, showStartFeedbackButton, onStartFeedback }: Readonly<Props>) {

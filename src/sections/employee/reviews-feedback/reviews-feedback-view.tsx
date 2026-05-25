@@ -108,7 +108,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
         category: `${f.Category} ${f.Year}`,
         dateInitiated: f.CreatedAt,
         status: (f.Status === 'approved' ? 'in-progress' : f.Status === 'rejected' ? 'rejected' : 'for-your-approval') as any,
-        statusLabel: f.Status === 'approved' ? 'Approved' : f.Status === 'rejected' ? 'List Rejected' : 'For Your Approval',
+        statusLabel: f.Status === 'approved' ? 'Approved' : f.Status === 'rejected' ? 'List Rejected' : 'Submitted',
         completion: `0/${f.Providers.length}`,
         reviewerAvatarUrls: f.Providers.map((p) => p.Name),
         avgScore: null,
