@@ -86,7 +86,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
     async (url) => {
       const res = await axios.get<FeedbackRequestDto[]>(url);
       return res.data
-        .filter((f) => f.Status === 'submitted')
+        .filter((f) => f.Status === 'submitted' || f.Status === 'for-your-approval')
         .map((f) => ({
           id: f.FeedbackId,
           employeeName: f.RequestorName,
@@ -96,7 +96,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
           status: 'for-your-approval' as const,
           statusLabel: 'For your Approval',
           completion: `0/${f.Providers.length}`,
-          reviewerAvatarUrls: [],
+          reviewerAvatarUrls: f.Providers.map((p) => p.Name),
           avgScore: null,
           feedbackRequest: f, // Store the original data
         })) as (IReviewFeedbackItem & { feedbackRequest: FeedbackRequestDto })[];

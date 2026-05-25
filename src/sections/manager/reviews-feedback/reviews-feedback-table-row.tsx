@@ -128,8 +128,14 @@ export function ReviewsFeedbackTableRow({ row, onClick, showStartFeedbackButton,
                 },
               }}
             >
-              {row.reviewerAvatarUrls.map((url, index) => (
-                <Avatar key={url + index} src={url} alt={`Reviewer ${index + 1}`} />
+              {row.reviewerAvatarUrls.map((item, index) => (
+                <Avatar
+                  key={item + index}
+                  src={item.startsWith('http') ? item : undefined}
+                  alt={item}
+                >
+                  {!item.startsWith('http') && item.charAt(0).toUpperCase()}
+                </Avatar>
               ))}
             </AvatarGroup>
           </TableCell>
