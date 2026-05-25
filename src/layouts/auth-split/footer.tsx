@@ -14,6 +14,8 @@ const SM_RETAIL_LOGO = `${CONFIG.assetsDir}/logo/SM Retail logo 1.svg`;
 export type AuthSplitFooterProps = BoxProps;
 
 export function AuthSplitFooter({ sx, ...other }: AuthSplitFooterProps) {
+  const currentYear = new Date().getFullYear();
+
   return (
     <Box
       component="footer"
@@ -44,8 +46,8 @@ export function AuthSplitFooter({ sx, ...other }: AuthSplitFooterProps) {
         }}
       />
 
-      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-        © 2026 Powered by SM Retail ITS
+      <Typography variant="caption" sx={{ color: 'black' }}>
+        © {currentYear} Powered by SM Retail ITS
       </Typography>
     </Box>
   );
