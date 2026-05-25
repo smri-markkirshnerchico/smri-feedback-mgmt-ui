@@ -18,11 +18,15 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
+import Avatar from '@mui/material/Avatar';
+import AvatarGroup from '@mui/material/AvatarGroup';
+import Divider from '@mui/material/Divider';
 import type { TransitionProps } from '@mui/material/transitions';
 
 import { CONFIG } from 'src/global-config';
 import axios from 'src/lib/axios';
 import { endpoints } from 'src/api/endpoints';
+import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
@@ -76,6 +80,7 @@ export function StartFeedbackModal({ open, onClose }: Props) {
   const [rows, setRows] = useState<ProviderRow[]>(Array.from({ length: 5 }, () => ({ ...EMPTY_ROW })));
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const { data: employeesData = [], isLoading: employeesLoading } = useSWR(
     open ? `${endpoints.core.admin.user.list}?appId=${CONFIG.feedbackAppId}` : null,
@@ -86,11 +91,11 @@ export function StartFeedbackModal({ open, onClose }: Props) {
   );
 
   const activeEmployees = useMemo(
-    () => employeesData.map((emp) => ({
+    () => Array.isArray(employeesData) ? employeesData.map((emp) => ({
       id: emp.UserId,
       name: `${emp.FirstName} ${emp.MiddleName} ${emp.LastName}`.trim(),
       position: emp.PositionDesc || 'N/A',
-    })),
+    })) : [],
     [employeesData]
   );
 
@@ -99,6 +104,10 @@ export function StartFeedbackModal({ open, onClose }: Props) {
 
   const updateRow = (index: number, field: keyof ProviderRow, value: string) => {
     setRows((prev) => prev.map((r, i) => (i === index ? { ...r, [field]: value } : r)));
+  };
+
+  const handleOpenConfirm = () => {
+    setConfirmOpen(true);
   };
 
   const handleSubmit = async () => {
@@ -125,6 +134,7 @@ export function StartFeedbackModal({ open, onClose }: Props) {
       });
 
       setSubmitting(false);
+      setConfirmOpen(false);
       onClose();
     } catch (error) {
       setSubmitting(false);
@@ -132,6 +142,11 @@ export function StartFeedbackModal({ open, onClose }: Props) {
       setSubmitError(message);
     }
   };
+
+  const selectedProviders = rows.filter((r) => r.employee).map((r) => {
+    const emp = activeEmployees.find((e) => e.id === r.employee);
+    return emp;
+  }).filter(Boolean);
 
   return (
     <Dialog
@@ -209,7 +224,7 @@ export function StartFeedbackModal({ open, onClose }: Props) {
           <LoadingButton
             disabled={!isValid || submitting}
             loading={submitting}
-            onClick={handleSubmit}
+            onClick={handleOpenConfirm}
             sx={{
               fontWeight: 700,
               fontSize: '17px',
@@ -455,6 +470,87 @@ export function StartFeedbackModal({ open, onClose }: Props) {
           </Box>
         ))}
       </Box>
+
+      {/* Confirmation Modal */}
+      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 2 } }}>
+        <Box sx={{ p: 3 }}>
+          {/* Title */}
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
+            Submit for Approval
+          </Typography>
+
+          <Divider sx={{ mb: 4 }} />
+
+          {/* Center Section */}
+          <Stack alignItems="center" gap={3} sx={{ mb: 4, textAlign: 'center' }}>
+            {/* Icon */}
+            <Iconify icon="mdi:email-send" sx={{ fontSize: 80, color: '#17B26A' }} />
+
+            {/* Question */}
+            <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '20px' }}>
+              Submit this list for approval?
+            </Typography>
+
+            {/* Description */}
+            <Typography variant="body2" sx={{ color: 'text.secondary', maxWidth: 400 }}>
+              Once submitted, the approver will be notified to review and validate the selected feedback providers.
+            </Typography>
+          </Stack>
+
+          {/* Approver Section */}
+          <Stack sx={{ p: 2, border: '1px solid #E8EAF6', borderRadius: 1, mb: 2 }}>
+            <Stack direction="row" alignItems="flex-start" gap={2}>
+              <Avatar sx={{ width: 56, height: 56, mt: 0.5 }} />
+              <Stack gap={0.5}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+                  Approver
+                </Typography>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                  Janicca Juniller
+                </Typography>
+              </Stack>
+            </Stack>
+          </Stack>
+
+          {/* Feedback Providers */}
+          <Stack sx={{ p: 2, border: '1px solid #E8EAF6', borderRadius: 1, mb: 4 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#919EAB', mb: 2 }}>
+              Feedback Providers ({selectedProviders.length})
+            </Typography>
+            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
+              {selectedProviders.map((provider, idx) => (
+                <Stack key={idx} direction="row" alignItems="center" gap={1.5}>
+                  <Avatar sx={{ width: 44, height: 44, fontSize: 14, fontWeight: 600, bgcolor: '#E8EEF5', color: '#637381' }}>
+                    {provider?.name?.charAt(0).toUpperCase()}
+                  </Avatar>
+                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                    {provider?.name}
+                  </Typography>
+                </Stack>
+              ))}
+            </Box>
+          </Stack>
+
+          {/* Buttons */}
+          <Stack direction="row" gap={2} justifyContent="flex-end">
+            <Button
+              variant="outlined"
+              onClick={() => setConfirmOpen(false)}
+              sx={{ borderRadius: 1, px: 3, fontWeight: 600 }}
+            >
+              Cancel
+            </Button>
+            <LoadingButton
+              variant="contained"
+              loading={submitting}
+              onClick={handleSubmit}
+              sx={{ borderRadius: 1, px: 4, fontWeight: 600, bgcolor: '#102FF6', color: 'white', '&:hover': { bgcolor: '#0919d4' } }}
+            >
+              Proceed
+            </LoadingButton>
+          </Stack>
+        </Box>
+      </Dialog>
     </Dialog>
   );
 }
