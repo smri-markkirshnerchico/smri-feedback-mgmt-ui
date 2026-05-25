@@ -103,7 +103,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   const [modalOpen, setModalOpen] = useState(false);
 
   const { data: needsMyReviewFeedback = [], isLoading: needsMyReviewLoading } = useSWR(
-    currentTab === 'needs-my-review' ? endpoints.application.feedbackAssignment.root : null,
+    endpoints.application.feedbackAssignment.root,
     async (url) => {
       const res = await axios.get<FeedbackAssignmentDto[]>(url);
       return res.data
@@ -125,7 +125,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   );
 
   const { data: myFeedbackData = [], isLoading: myFeedbackLoading } = useSWR(
-    currentTab === 'my-feedback' ? `${endpoints.application.feedback.root}/my-feedback` : null,
+    `${endpoints.application.feedback.root}/my-feedback`,
     async (url) => {
       const res = await axios.get<FeedbackRequestDto[]>(url);
       return res.data.map((f) => ({

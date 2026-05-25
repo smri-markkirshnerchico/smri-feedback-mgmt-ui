@@ -95,7 +95,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   const [selectedRow, setSelectedRow] = useState<IReviewFeedbackItem | null>(null);
 
   const { data: teamFeedback = [], isLoading: teamFeedbackLoading, mutate: mutateTeamFeedback } = useSWR(
-    currentTab === 'my-teams-review' ? endpoints.application.feedback.root : null,
+    endpoints.application.feedback.root,
     async (url) => {
       const res = await axios.get<FeedbackRequestDto[]>(url);
       return res.data
@@ -117,7 +117,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   );
 
   const { data: needsMyReviewFeedback = [], isLoading: needsMyReviewLoading, mutate: mutateNeedsMyReview } = useSWR(
-    currentTab === 'needs-my-review' ? endpoints.application.feedbackAssignment.root : null,
+    endpoints.application.feedbackAssignment.root,
     async (url) => {
       const res = await axios.get<FeedbackAssignmentDto[]>(url);
       return res.data
