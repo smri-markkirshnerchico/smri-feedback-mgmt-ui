@@ -16,7 +16,7 @@ import { Iconify } from 'src/components/iconify';
 
 import { canAddRemarks, hasStarRemarks } from 'src/types/provide-feedback';
 
-import { RATING_SCALE } from './provide-feedback-constants';
+import { RATING_SCALE, CRITERION_DESCRIPTIONS } from './provide-feedback-constants';
 import { AddRemarksDialog } from './add-remarks-dialog';
 
 // ----------------------------------------------------------------------
@@ -232,7 +232,7 @@ export function ProvideFeedbackCriterionRow({
                 lineHeight: 1.6,
               }}
             >
-              {RATING_SCALE.find((item) => item.value === popoverRating)?.description}
+              {CRITERION_DESCRIPTIONS[criterion.id]?.[popoverRating] || RATING_SCALE.find((item) => item.value === popoverRating)?.description}
             </Typography>
           </Box>
         )}
