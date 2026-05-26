@@ -20,6 +20,7 @@ type Props = {
   row: IReviewFeedbackItem;
   showStartFeedbackButton?: boolean;
   onStartFeedback?: () => void;
+  onViewFeedback?: () => void;
 };
 
 function getStatusColor(status: IReviewFeedbackItem['status'] | 'rejected') {
@@ -30,9 +31,10 @@ function getStatusColor(status: IReviewFeedbackItem['status'] | 'rejected') {
   return 'default';
 }
 
-export function ReviewsFeedbackTableRow({ row, showStartFeedbackButton, onStartFeedback }: Readonly<Props>) {
+export function ReviewsFeedbackTableRow({ row, showStartFeedbackButton, onStartFeedback, onViewFeedback }: Readonly<Props>) {
   const employeeName = row.employeeName ?? 'Unknown';
   const employeeInitial = employeeName.charAt(0).toUpperCase();
+  const isSubmitted = row.status === 'completed' && row.statusLabel === 'Feedback Submitted';
 
   return (
     <TableRow
@@ -83,25 +85,47 @@ export function ReviewsFeedbackTableRow({ row, showStartFeedbackButton, onStartF
 
       {showStartFeedbackButton ? (
         <TableCell sx={{ textAlign: 'right' }}>
-          <Button
-            variant="outlined"
-            color="primary"
-            endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
-            onClick={(event) => {
-              event.stopPropagation();
-              onStartFeedback?.();
-            }}
-            sx={{
-              borderRadius: 1,
-              px: 2.5,
-              py: 1,
-              textTransform: 'none',
-              fontWeight: 600,
-              fontSize: '14px',
-            }}
-          >
-            Start Feedback
-          </Button>
+          {isSubmitted ? (
+            <Button
+              variant="outlined"
+              color="primary"
+              endIcon={<Iconify icon="eva:eye-fill" />}
+              onClick={(event) => {
+                event.stopPropagation();
+                onViewFeedback?.();
+              }}
+              sx={{
+                borderRadius: 1,
+                px: 2.5,
+                py: 1,
+                textTransform: 'none',
+                fontWeight: 600,
+                fontSize: '14px',
+              }}
+            >
+              View
+            </Button>
+          ) : (
+            <Button
+              variant="outlined"
+              color="primary"
+              endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
+              onClick={(event) => {
+                event.stopPropagation();
+                onStartFeedback?.();
+              }}
+              sx={{
+                borderRadius: 1,
+                px: 2.5,
+                py: 1,
+                textTransform: 'none',
+                fontWeight: 600,
+                fontSize: '14px',
+              }}
+            >
+              Start Feedback
+            </Button>
+          )}
         </TableCell>
       ) : (
         <>

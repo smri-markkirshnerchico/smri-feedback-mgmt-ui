@@ -68,6 +68,7 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
   );
   const [overallComments, setOverallComments] = useState('');
   const [starRemarks, setStarRemarks] = useState<StarRemarks>({ ...EMPTY_STAR_REMARKS });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const employeeName = assignment
     ? readField(assignment, 'EmployeeToReviewName', 'employeeToReviewName') || 'Unknown'
@@ -94,10 +95,26 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
     router.push(needsMyReviewPath);
   }, [router, needsMyReviewPath]);
 
-  const handleSubmit = useCallback(() => {
-    // TODO: POST feedback submission
-    router.push(needsMyReviewPath);
-  }, [router, needsMyReviewPath]);
+  const handleSubmit = useCallback(async () => {
+    setIsSubmitting(true);
+    try {
+      const feedbackPayload = {
+        assignmentId,
+        ratings,
+        starRemarks: allRatedAsME ? starRemarks : null,
+        overallComments: allRatedAsME ? null : overallComments,
+      };
+
+      console.log('Submitting feedback:', feedbackPayload);
+      const response = await axios.patch(endpoints.application.feedbackAssignment.submit(assignmentId), feedbackPayload);
+      console.log('Feedback submitted successfully:', response);
+
+      router.push(needsMyReviewPath);
+    } catch (error) {
+      console.error('Failed to submit feedback:', error);
+      setIsSubmitting(false);
+    }
+  }, [router, needsMyReviewPath, assignmentId, ratings, starRemarks, overallComments, allRatedAsME]);
 
   const actionButtons = (
     <Stack direction="row" spacing={2}>
@@ -117,7 +134,7 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
       </Button>
       <Button
         variant="contained"
-        disabled={!canSubmit}
+        disabled={!canSubmit || isSubmitting}
         onClick={handleSubmit}
         endIcon={<Iconify icon="solar:plain-2-bold" width={20} />}
         sx={{
@@ -125,9 +142,9 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
           px: 2.5,
           fontWeight: 700,
           textTransform: 'none',
-          bgcolor: canSubmit ? '#102FF6' : 'rgba(145, 158, 171, 0.24)',
-          color: canSubmit ? 'common.white' : 'rgba(145, 158, 171, 0.8)',
-          '&:hover': { bgcolor: canSubmit ? '#0919d4' : 'rgba(145, 158, 171, 0.24)' },
+          bgcolor: (canSubmit && !isSubmitting) ? '#102FF6' : 'rgba(145, 158, 171, 0.24)',
+          color: (canSubmit && !isSubmitting) ? 'common.white' : 'rgba(145, 158, 171, 0.8)',
+          '&:hover': { bgcolor: (canSubmit && !isSubmitting) ? '#0919d4' : 'rgba(145, 158, 171, 0.24)' },
         }}
       >
         Submit Feedback

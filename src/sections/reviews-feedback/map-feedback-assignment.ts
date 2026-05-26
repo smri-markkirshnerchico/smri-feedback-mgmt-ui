@@ -12,9 +12,9 @@ export function readField(record: Record<string, unknown>, ...keys: string[]): s
   return '';
 }
 
-function isPendingStatus(record: Record<string, unknown>): boolean {
+function isPendingOrSubmittedStatus(record: Record<string, unknown>): boolean {
   const status = readField(record, 'Status', 'status').toLowerCase();
-  return status === 'pending';
+  return status === 'pending' || status === 'submitted';
 }
 
 export function mapFeedbackAssignmentToRow(
@@ -22,6 +22,11 @@ export function mapFeedbackAssignmentToRow(
 ): IReviewFeedbackItem & { feedbackAssignment: Record<string, unknown> } {
   const category = readField(assignment, 'Category', 'category');
   const year = readField(assignment, 'Year', 'year');
+  const backendStatus = readField(assignment, 'Status', 'status').toLowerCase();
+
+  const isSubmitted = backendStatus === 'submitted';
+  const status = isSubmitted ? 'completed' : 'in-progress';
+  const statusLabel = isSubmitted ? 'Feedback Submitted' : 'Pending';
 
   return {
     id:
@@ -31,8 +36,8 @@ export function mapFeedbackAssignmentToRow(
     employeeAvatarUrl: undefined,
     category: [category, year].filter(Boolean).join(' ') || '—',
     dateInitiated: readField(assignment, 'CreatedAt', 'createdAt') || new Date().toISOString(),
-    status: 'in-progress',
-    statusLabel: 'Pending',
+    status,
+    statusLabel,
     completion: '0/1',
     reviewerAvatarUrls: [],
     avgScore: null,
@@ -45,6 +50,6 @@ export function mapFeedbackAssignments(
 ): (IReviewFeedbackItem & { feedbackAssignment: Record<string, unknown> })[] {
   return assignments
     .filter((item): item is Record<string, unknown> => item != null && typeof item === 'object')
-    .filter(isPendingStatus)
+    .filter(isPendingOrSubmittedStatus)
     .map(mapFeedbackAssignmentToRow);
 }

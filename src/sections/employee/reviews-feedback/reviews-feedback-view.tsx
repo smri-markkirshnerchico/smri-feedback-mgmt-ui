@@ -279,6 +279,11 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
                         ? () => router.push(paths.main.employee.provideFeedback(row.id))
                         : undefined
                     }
+                    onViewFeedback={
+                      currentTab === 'needs-my-review'
+                        ? () => router.push(`${paths.main.employee.provideFeedback(row.id)}?view=true`)
+                        : undefined
+                    }
                   />
                 ))}
 

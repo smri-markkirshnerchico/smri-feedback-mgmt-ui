@@ -38,6 +38,7 @@ export const endpoints = {
     },
     feedbackAssignment: {
       root: `/FeedbackAssignment`,
+      submit: (id: string) => `/FeedbackAssignment/${id}/submit`,
     }
   }
 };
