@@ -67,6 +67,7 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
     () => Object.fromEntries(PERFORMANCE_CRITERIA.map((c) => [c.id, { ...EMPTY_STAR_REMARKS }]))
   );
   const [overallComments, setOverallComments] = useState('');
+  const [starRemarks, setStarRemarks] = useState<StarRemarks>({ ...EMPTY_STAR_REMARKS });
 
   const employeeName = assignment
     ? readField(assignment, 'EmployeeToReviewName', 'employeeToReviewName') || 'Unknown'
@@ -78,6 +79,7 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
   const avatarUrl = `${CONFIG.assetsDir}/assets/images/mock/avatar/avatar-1.webp`;
 
   const allRated = PERFORMANCE_CRITERIA.every((c) => ratings[c.id] != null);
+  const allRatedAsME = PERFORMANCE_CRITERIA.every((c) => ratings[c.id] === 'ME');
   const canSubmit = allRated;
 
   const ratingSummaryLabel = useMemo(() => {
@@ -269,22 +271,58 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
         }}
       >
         <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-          Overall Comments
+          {allRatedAsME ? 'STAR Method - Overall Comments' : 'Overall Comments'}
         </Typography>
-        <TextField
-          fullWidth
-          multiline
-          minRows={5}
-          placeholder="Share your overall assessment, highlight key achievements, and suggest areas for development..."
-          value={overallComments}
-          onChange={(e) => setOverallComments(e.target.value)}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              borderRadius: 1.5,
-              bgcolor: 'background.neutral',
-            },
-          }}
-        />
+        {allRatedAsME ? (
+          <Stack spacing={2}>
+            {[
+              { key: 'situation', label: 'Situation', description: 'Set the scene and provide context for the example.' },
+              { key: 'task', label: 'Task', description: 'Describe the specific challenge, responsibility, or goal you faced.' },
+              { key: 'action', label: 'Action', description: 'Explain in detail the actions you took to address the situation, focusing on your individual contribution.' },
+              { key: 'result', label: 'Result', description: 'Share the outcomes achieved, such as savings, efficiency gains, or lessons learned, ideally with quantifiable data.' },
+            ].map((item) => (
+              <Box key={item.key}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5 }}>
+                  {item.label}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1 }}>
+                  {item.description}
+                </Typography>
+                <TextField
+                  fullWidth
+                  multiline
+                  minRows={3}
+                  placeholder={`Enter ${item.label.toLowerCase()}...`}
+                  value={starRemarks[item.key as keyof StarRemarks] || ''}
+                  onChange={(e) =>
+                    setStarRemarks((prev) => ({ ...prev, [item.key]: e.target.value }))
+                  }
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 1.5,
+                      bgcolor: 'background.neutral',
+                    },
+                  }}
+                />
+              </Box>
+            ))}
+          </Stack>
+        ) : (
+          <TextField
+            fullWidth
+            multiline
+            minRows={5}
+            placeholder="Share your overall assessment, highlight key achievements, and suggest areas for development..."
+            value={overallComments}
+            onChange={(e) => setOverallComments(e.target.value)}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 1.5,
+                bgcolor: 'background.neutral',
+              },
+            }}
+          />
+        )}
       </Card>
 
       <Stack direction="row" justifyContent="flex-end" spacing={2}>
