@@ -39,8 +39,8 @@ export function ProvideFeedbackCriterionRow({
   const [remarksDialogOpen, setRemarksDialogOpen] = useState(false);
   const [popoverAnchor, setPopoverAnchor] = useState<HTMLButtonElement | null>(null);
   const [popoverRating, setPopoverRating] = useState<FeedbackRating | null>(null);
-  const [anchorOrigin, setAnchorOrigin] = useState({ vertical: 'bottom' as const, horizontal: 'center' as const });
-  const [transformOrigin, setTransformOrigin] = useState({ vertical: 'top' as const, horizontal: 'center' as const });
+  const [anchorOrigin, setAnchorOrigin] = useState<{ vertical: 'top' | 'bottom'; horizontal: 'center' }>({ vertical: 'bottom', horizontal: 'center' });
+  const [transformOrigin, setTransformOrigin] = useState<{ vertical: 'top' | 'bottom'; horizontal: 'center' }>({ vertical: 'top', horizontal: 'center' });
 
   useEffect(() => {
     if (popoverAnchor) {
