@@ -11,6 +11,8 @@ import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
+import { varAlpha } from 'minimal-shared/utils';
+
 import { Iconify } from 'src/components/iconify';
 
 import { FeedbackRatingBadge } from './feedback-rating-badge';
@@ -51,15 +53,16 @@ export function FeedbackDetailsCriterionCard({
   return (
     <Card
       variant="outlined"
-      sx={{
+      sx={(theme) => ({
         borderRadius: '12px',
-        border: expanded
-          ? '1px solid rgba(16, 47, 246, 0.48)'
-          : '1px solid rgba(145, 158, 171, 0.2)',
+        border: '1px solid',
+        borderColor: expanded
+          ? varAlpha(theme.vars.palette.primary.mainChannel, 0.48)
+          : theme.vars.palette.divider,
         boxShadow: 'none',
-        bgcolor: '#FFFFFF',
+        bgcolor: 'background.paper',
         overflow: 'hidden',
-      }}
+      })}
     >
       <Stack
         direction="row"

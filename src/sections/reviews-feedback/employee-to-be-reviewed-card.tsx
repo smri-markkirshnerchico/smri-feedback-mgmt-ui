@@ -8,8 +8,6 @@ import Typography from '@mui/material/Typography';
 
 // ----------------------------------------------------------------------
 
-const DIVIDER_COLOR = '#EDEDED';
-
 type Props = {
   employeeName: string;
   email: string;
@@ -55,7 +53,7 @@ function CardDivider() {
       sx={{
         width: 1,
         height: '1px',
-        bgcolor: DIVIDER_COLOR,
+        bgcolor: 'divider',
       }}
     />
   );
@@ -76,9 +74,10 @@ export function EmployeeToBeReviewedCard({
       sx={{
         p: 3,
         borderRadius: '16px',
-        bgcolor: '#FFFFFF',
-        border: '1px solid rgba(145, 158, 171, 0.12)',
-        boxShadow: '0px 4px 20px rgba(145, 158, 171, 0.12)',
+        bgcolor: 'background.paper',
+        border: '1px solid',
+        borderColor: 'divider',
+        boxShadow: (theme) => theme.vars.customShadows.z1,
       }}
     >
       <Typography
@@ -102,7 +101,8 @@ export function EmployeeToBeReviewedCard({
           sx={{
             width: 88,
             height: 88,
-            border: '4px solid #F4F6F8',
+            border: '4px solid',
+            borderColor: 'background.neutral',
           }}
         >
           {employeeName.charAt(0)}

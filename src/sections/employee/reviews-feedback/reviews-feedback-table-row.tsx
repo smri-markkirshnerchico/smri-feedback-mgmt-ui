@@ -7,12 +7,12 @@ import Button from '@mui/material/Button';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
-import AvatarGroup from '@mui/material/AvatarGroup';
-
 import { fDate, fTime } from 'src/utils/format-time';
 
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
+import { ReviewerAvatarStack } from 'src/sections/reviews-feedback/reviewer-avatar-stack';
+import { reviewsFeedbackTableRowSx } from 'src/sections/reviews-feedback/reviews-feedback-table-styles';
 
 // ----------------------------------------------------------------------
 
@@ -37,20 +37,7 @@ export function ReviewsFeedbackTableRow({ row, showStartFeedbackButton, onStartF
   const isSubmitted = row.status === 'completed' && row.statusLabel === 'Feedback Submitted';
 
   return (
-    <TableRow
-      sx={{
-        '& > td': {
-          border: 0,
-          py: 2,
-        },
-        bgcolor: '#ffffff',
-        border: '1px solid #e0e0e0',
-        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
-        borderRadius: '12px',
-        '&:first-of-type td:first-of-type': { borderTopLeftRadius: 12, borderBottomLeftRadius: 12 },
-        '&:first-of-type td:last-of-type': { borderTopRightRadius: 12, borderBottomRightRadius: 12 },
-      }}
-    >
+    <TableRow sx={(theme) => reviewsFeedbackTableRowSx(theme)}>
       <TableCell>
         <Stack direction="row" alignItems="center" spacing={1.5}>
           <Avatar
@@ -135,25 +122,8 @@ export function ReviewsFeedbackTableRow({ row, showStartFeedbackButton, onStartF
             </Label>
           </TableCell>
 
-          <TableCell>
-            <AvatarGroup
-              max={5}
-              sx={{
-                justifyContent: 'flex-start',
-                '& .MuiAvatar-root': {
-                  width: 28,
-                  height: 28,
-                  fontSize: 12,
-                  border: (theme) => `2px solid ${theme.vars.palette.background.paper}`,
-                },
-              }}
-            >
-              {row.reviewerAvatarUrls.map((item, index) => (
-                <Avatar key={item + index} src={item.startsWith('http') ? item : undefined} alt={item}>
-                  {!item.startsWith('http') && item.charAt(0).toUpperCase()}
-                </Avatar>
-              ))}
-            </AvatarGroup>
+          <TableCell sx={{ verticalAlign: 'middle' }}>
+            <ReviewerAvatarStack reviewers={row.reviewerAvatarUrls} />
           </TableCell>
 
           <TableCell>

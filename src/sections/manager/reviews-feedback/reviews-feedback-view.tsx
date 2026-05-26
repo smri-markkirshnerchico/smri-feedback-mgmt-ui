@@ -29,6 +29,7 @@ import { Scrollbar } from 'src/components/scrollbar';
 import { TableNoData, TableHeadCustom, type TableHeadCellProps } from 'src/components/table';
 
 import { mapFeedbackAssignments } from 'src/sections/reviews-feedback/map-feedback-assignment';
+import { withReviewsFeedbackTableHeadSx } from 'src/sections/reviews-feedback/reviews-feedback-table-styles';
 
 import { TAB_COUNTS, getReviewFeedbackByTab } from './mock-data';
 import { ReviewsFeedbackTableRow } from './reviews-feedback-table-row';
@@ -268,12 +269,12 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
                 '& .MuiTableCell-head': {
                   color: 'text.secondary',
                   fontWeight: 600,
-                  bgcolor: '#f5f5f5',
+                  bgcolor: 'background.neutral',
                   borderBottom: 'none',
                 },
               }}
             >
-              <TableHeadCustom headCells={TABLE_HEAD} />
+              <TableHeadCustom headCells={withReviewsFeedbackTableHeadSx(TABLE_HEAD)} />
 
               <TableBody>
                 {dataFiltered.map((row) => (

@@ -167,7 +167,7 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
             px: 2.5,
             fontWeight: 600,
             textTransform: 'none',
-            borderColor: 'rgba(145, 158, 171, 0.32)',
+            borderColor: 'divider',
             color: 'text.primary',
             borderRadius: 1,
           }}
@@ -190,9 +190,10 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
             minWidth: 0,
             p: 3,
             borderRadius: '16px',
-            bgcolor: '#FFFFFF',
-            border: '1px solid rgba(145, 158, 171, 0.12)',
-            boxShadow: '0px 4px 20px rgba(145, 158, 171, 0.08)',
+            bgcolor: 'background.paper',
+            border: '1px solid',
+            borderColor: 'divider',
+            boxShadow: (theme) => theme.vars.customShadows.z1,
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 2.5, color: '#1A1A1A' }}>
