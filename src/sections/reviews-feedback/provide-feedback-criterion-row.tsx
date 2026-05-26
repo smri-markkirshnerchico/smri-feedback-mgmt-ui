@@ -2,12 +2,13 @@
 
 import type { PerformanceCriterion, FeedbackRating, StarRemarks } from 'src/types/provide-feedback';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
@@ -36,6 +37,28 @@ export function ProvideFeedbackCriterionRow({
   onStarRemarksChange,
 }: Readonly<Props>) {
   const [remarksDialogOpen, setRemarksDialogOpen] = useState(false);
+  const [popoverAnchor, setPopoverAnchor] = useState<HTMLButtonElement | null>(null);
+  const [popoverRating, setPopoverRating] = useState<FeedbackRating | null>(null);
+  const [anchorOrigin, setAnchorOrigin] = useState({ vertical: 'bottom' as const, horizontal: 'center' as const });
+  const [transformOrigin, setTransformOrigin] = useState({ vertical: 'top' as const, horizontal: 'center' as const });
+
+  useEffect(() => {
+    if (popoverAnchor) {
+      const rect = popoverAnchor.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+
+      if (spaceBelow < 400 && spaceAbove > spaceBelow) {
+        // Show above if more space above
+        setAnchorOrigin({ vertical: 'top', horizontal: 'center' });
+        setTransformOrigin({ vertical: 'bottom', horizontal: 'center' });
+      } else {
+        // Show below by default
+        setAnchorOrigin({ vertical: 'bottom', horizontal: 'center' });
+        setTransformOrigin({ vertical: 'top', horizontal: 'center' });
+      }
+    }
+  }, [popoverAnchor]);
 
   const remarksEnabled = canAddRemarks(rating);
   const remarksFilled = hasStarRemarks(starRemarks);
@@ -46,6 +69,13 @@ export function ProvideFeedbackCriterionRow({
       onStarRemarksChange({ situation: '', task: '', action: '', result: '' });
       setRemarksDialogOpen(false);
     }
+  };
+
+  const handleRatingInfoClick = (e: React.MouseEvent<HTMLButtonElement>, value: FeedbackRating) => {
+    e.stopPropagation();
+    handleRatingChange(value);
+    setPopoverAnchor(e.currentTarget);
+    setPopoverRating(value);
   };
 
   return (
@@ -94,7 +124,7 @@ export function ProvideFeedbackCriterionRow({
                 <Button
                   key={item.value}
                   variant="outlined"
-                  onClick={() => handleRatingChange(item.value)}
+                  onClick={(e) => handleRatingInfoClick(e, item.value)}
                   sx={{
                     minWidth: 72,
                     height: 40,
@@ -169,6 +199,44 @@ export function ProvideFeedbackCriterionRow({
           onConfirm={onStarRemarksChange}
         />
       )}
+
+      <Popover
+        open={!!popoverAnchor && !!popoverRating}
+        anchorEl={popoverAnchor}
+        onClose={() => setPopoverAnchor(null)}
+        anchorOrigin={anchorOrigin}
+        transformOrigin={transformOrigin}
+        slotProps={{
+          paper: {
+            sx: {
+              maxWidth: 450,
+              backgroundColor: '#ffffff',
+              borderRadius: 2,
+              boxShadow: '0 8px 16px rgba(0, 0, 0, 0.12)',
+              mt: anchorOrigin.vertical === 'bottom' ? 1 : 0,
+              mb: anchorOrigin.vertical === 'top' ? 1 : 0,
+            },
+          },
+        }}
+      >
+        {popoverRating && (
+          <Box sx={{ p: 2 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
+              {criterion.title} ({popoverRating}):
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+                whiteSpace: 'pre-wrap',
+                lineHeight: 1.6,
+              }}
+            >
+              {RATING_SCALE.find((item) => item.value === popoverRating)?.description}
+            </Typography>
+          </Box>
+        )}
+      </Popover>
     </>
   );
 }

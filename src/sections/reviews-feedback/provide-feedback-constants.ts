@@ -43,6 +43,7 @@ export const RATING_SCALE = [
     bgcolor: 'rgba(255, 171, 0, 0.16)',
     color: '#B76E00',
     icon: 'solar:sad-circle-bold',
+    description: 'From none at all to limited visible manifestation of giving his best efforts to deliver good results.',
   },
   {
     value: 'ME' as const,
@@ -51,6 +52,12 @@ export const RATING_SCALE = [
     bgcolor: 'rgba(0, 184, 217, 0.16)',
     color: '#006C9C',
     icon: 'solar:expressionless-circle-bold',
+    description: `• Leads and drives the team to meet the required targets
+• Creates and implements work plans with contingencies
+• Takes responsibility for getting things done efficiently and effectively
+• Is action-oriented, considers options and then acts decisively
+• Manifests a "can do" attitude. Is resilient and adaptive.
+• No IVR served such as Negligence or any violation of company policies and procedures on set guidelines among others for this value.`,
   },
   {
     value: 'EE' as const,
@@ -59,5 +66,13 @@ export const RATING_SCALE = [
     bgcolor: 'rgba(34, 197, 94, 0.16)',
     color: '#118D57',
     icon: 'solar:smile-circle-bold',
+    description: `• Exceeds set targets; takes aggressive action to achieve goals beyond normal expectations
+• Exhibits a strong sense of urgency in solving problems and/ or getting results
+• Maintains a positive outlook and encourages others to reach goals despite obstacles and adversity. Is continuously on the look-out for opportunities to improve things.
+• Makes things happen, regardless of situation and ready to overcome obstacles.
+• Is open change.
+• Provides inspiration and excitement
+• Submits accurate and effective reports and deliverables before the agreed timelines.
+• No IVR served such as Negligence or any violation of company policies and procedures on set guidelines among others for this value.`,
   },
 ];
