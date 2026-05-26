@@ -127,6 +127,8 @@ export const RATING_SCALE = [
     fullLabel: 'Needs Improvement',
     bgcolor: 'rgba(255, 171, 0, 0.16)',
     color: '#B76E00',
+    badgeBg: '#FFF4D4',
+    badgeColor: '#9A6B2F',
     icon: 'solar:sad-circle-bold',
     description: 'From none at all to limited visible manifestation of giving his best efforts to deliver good results.',
   },
@@ -136,6 +138,8 @@ export const RATING_SCALE = [
     fullLabel: 'Meets Expectation',
     bgcolor: 'rgba(0, 184, 217, 0.16)',
     color: '#006C9C',
+    badgeBg: '#D6F4F9',
+    badgeColor: '#006C9C',
     icon: 'solar:expressionless-circle-bold',
     description: `• Leads and drives the team to meet the required targets
 • Creates and implements work plans with contingencies
@@ -150,6 +154,8 @@ export const RATING_SCALE = [
     fullLabel: 'Exceeds Expectations',
     bgcolor: 'rgba(34, 197, 94, 0.16)',
     color: '#118D57',
+    badgeBg: '#D9F5E5',
+    badgeColor: '#118D57',
     icon: 'solar:smile-circle-bold',
     description: `• Exceeds set targets; takes aggressive action to achieve goals beyond normal expectations
 • Exhibits a strong sense of urgency in solving problems and/ or getting results

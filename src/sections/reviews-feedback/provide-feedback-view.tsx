@@ -23,6 +23,8 @@ import { Iconify } from 'src/components/iconify';
 import { Label } from 'src/components/label';
 
 import { readField } from './map-feedback-assignment';
+import { FeedbackDetailsView } from './feedback-details-view';
+import { saveFeedbackSubmission } from './feedback-submission-storage';
 import { PERFORMANCE_CRITERIA, RATING_SCALE } from './provide-feedback-constants';
 import { ProvideFeedbackCriterionRow } from './provide-feedback-criterion-row';
 
@@ -40,7 +42,10 @@ function emailFromName(name: string) {
 export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const assignmentId = searchParams.get('assignmentId') ?? '';
+  const rawAssignmentId = searchParams.get('assignmentId') ?? '';
+  const assignmentId = rawAssignmentId.split('?')[0].split('&')[0].trim();
+  const isViewMode = searchParams.get('view') === 'true';
+  const reviewsFeedbackPath = needsMyReviewPath.replace(/\/needs-my-review\/?$/, '/my-feedback');
 
   const { data: assignments = [], mutate: mutateAssignments } = useSWR<Record<string, unknown>[]>(
     endpoints.application.feedbackAssignment.root,
@@ -109,6 +114,13 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
       const response = await axios.patch(endpoints.application.feedbackAssignment.submit(assignmentId), feedbackPayload);
       console.log('Feedback submitted successfully:', response);
 
+      saveFeedbackSubmission(assignmentId, {
+        ratings: ratings as Record<string, FeedbackRating>,
+        starRemarksByCriterion,
+        overallComments,
+        starRemarks: allRatedAsME ? starRemarks : undefined,
+      });
+
       // Refetch assignments to update all devices
       await mutateAssignments();
 
@@ -117,7 +129,26 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
       console.error('Failed to submit feedback:', error);
       setIsSubmitting(false);
     }
-  }, [router, needsMyReviewPath, assignmentId, ratings, starRemarks, overallComments, allRatedAsME, mutateAssignments]);
+  }, [
+    router,
+    needsMyReviewPath,
+    assignmentId,
+    ratings,
+    starRemarks,
+    starRemarksByCriterion,
+    overallComments,
+    allRatedAsME,
+    mutateAssignments,
+  ]);
+
+  if (isViewMode) {
+    return (
+      <FeedbackDetailsView
+        needsMyReviewPath={needsMyReviewPath}
+        reviewsFeedbackPath={reviewsFeedbackPath}
+      />
+    );
+  }
 
   const actionButtons = (
     <Stack direction="row" spacing={2}>
@@ -157,6 +188,32 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
 
   return (
     <MainContent maxWidth={false}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        flexWrap="wrap"
+        sx={(theme) => ({
+          position: 'sticky',
+          top: {
+            xs: 'var(--layout-header-mobile-height)',
+            md: 'var(--layout-header-desktop-height)',
+          },
+          zIndex: theme.zIndex.appBar,
+          bgcolor: theme.palette.background.default,
+          borderBottom: `1px solid ${theme.palette.divider}`,
+          py: 1.5,
+          mb: 2,
+          gap: 2,
+        })}
+      >
+        <Typography variant="h4" sx={{ fontWeight: 800, color: '#102FF6' }}>
+          Provide Feedback
+        </Typography>
+
+        {actionButtons}
+      </Stack>
+
       <Card
         variant="outlined"
         sx={{
@@ -344,10 +401,6 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
           />
         )}
       </Card>
-
-      <Stack direction="row" justifyContent="flex-end" spacing={2}>
-        {actionButtons}
-      </Stack>
     </MainContent>
   );
 }
