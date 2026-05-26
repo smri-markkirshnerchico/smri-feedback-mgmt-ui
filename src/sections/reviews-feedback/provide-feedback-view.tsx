@@ -19,7 +19,6 @@ import { endpoints } from 'src/api/endpoints';
 import { CONFIG } from 'src/global-config';
 
 import { MainContent } from 'src/layouts/main';
-import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { Iconify } from 'src/components/iconify';
 import { Label } from 'src/components/label';
 
@@ -136,14 +135,6 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
 
   return (
     <MainContent maxWidth={false}>
-      <CustomBreadcrumbs
-        customTitle="Provide Feedback"
-        action={actionButtons}
-        slotProps={{
-          heading: { sx: { fontFamily: 'Henry Sans', color: 'primary.main' } },
-        }}
-      />
-
       <Card
         variant="outlined"
         sx={{
