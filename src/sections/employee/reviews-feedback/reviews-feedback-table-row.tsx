@@ -24,6 +24,7 @@ type Props = {
 
 function getStatusColor(status: IReviewFeedbackItem['status'] | 'rejected') {
   if (status === 'for-your-approval') return 'default';
+  if (status === 'in-progress') return 'success';
   if (status === 'completed') return 'success';
   if (status === 'rejected') return 'error';
   return 'default';

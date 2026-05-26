@@ -25,6 +25,7 @@ type Props = {
 
 function getStatusColor(status: IReviewFeedbackItem['status']) {
   if (status === 'for-your-approval') return 'warning';
+  if (status === 'in-progress') return 'success';
   if (status === 'completed') return 'success';
   return 'info';
 }
