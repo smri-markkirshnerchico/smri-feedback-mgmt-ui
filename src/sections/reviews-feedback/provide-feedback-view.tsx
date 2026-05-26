@@ -42,7 +42,7 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
   const searchParams = useSearchParams();
   const assignmentId = searchParams.get('assignmentId') ?? '';
 
-  const { data: assignments = [] } = useSWR<Record<string, unknown>[]>(
+  const { data: assignments = [], mutate: mutateAssignments } = useSWR<Record<string, unknown>[]>(
     endpoints.application.feedbackAssignment.root,
     async (url: string) => {
       const res = await axios.get<unknown[]>(url);
@@ -109,12 +109,15 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
       const response = await axios.patch(endpoints.application.feedbackAssignment.submit(assignmentId), feedbackPayload);
       console.log('Feedback submitted successfully:', response);
 
+      // Refetch assignments to update all devices
+      await mutateAssignments();
+
       router.push(needsMyReviewPath);
     } catch (error) {
       console.error('Failed to submit feedback:', error);
       setIsSubmitting(false);
     }
-  }, [router, needsMyReviewPath, assignmentId, ratings, starRemarks, overallComments, allRatedAsME]);
+  }, [router, needsMyReviewPath, assignmentId, ratings, starRemarks, overallComments, allRatedAsME, mutateAssignments]);
 
   const actionButtons = (
     <Stack direction="row" spacing={2}>

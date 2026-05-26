@@ -94,7 +94,8 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
     async (url) => {
       const res = await axios.get<unknown[]>(url);
       return mapFeedbackAssignments(res.data);
-    }
+    },
+    { revalidateOnFocus: true, revalidateOnReconnect: true }
   );
 
   const { data: myFeedbackData = [], isLoading: myFeedbackLoading } = useSWR(
