@@ -255,7 +255,7 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
         ))}
       </Stack>
 
-      <Card
+      {/* <Card
         variant="outlined"
         sx={{
           px: 2.5,
@@ -275,7 +275,7 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
             {ratingSummaryLabel}
           </Typography>
         </Stack>
-      </Card>
+      </Card> */}
 
       <Card
         variant="outlined"
