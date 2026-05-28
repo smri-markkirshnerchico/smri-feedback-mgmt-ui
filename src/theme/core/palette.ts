@@ -64,8 +64,18 @@ export type GreyExtend = {
 
 // ----------------------------------------------------------------------
 
-// Primary color
-export const primary = createPaletteChannel(themeConfig.palette.primary);
+// Primary color - theme-dependent
+const primaryLight = createPaletteChannel(themeConfig.palette.primary);
+const primaryDark = createPaletteChannel({
+  lighter: '#F0F4FF',
+  light: '#7F99FF',
+  main: '#5070FF',
+  dark: '#3D56CC',
+  darker: '#2A3A99',
+  contrastText: '#FFFFFF',
+});
+
+export const primary = primaryLight;
 
 // Secondary color
 export const secondary = createPaletteChannel(themeConfig.palette.secondary);
@@ -120,8 +130,20 @@ export const action = {
 // ----------------------------------------------------------------------
 
 // Base palette
-export const basePalette = {
-  primary,
+const basePaletteLight = {
+  primary: primaryLight,
+  secondary,
+  info,
+  success,
+  warning,
+  error,
+  common,
+  grey,
+  divider: varAlpha(grey['500Channel'], 0.2),
+};
+
+const basePaletteDark = {
+  primary: primaryDark,
   secondary,
   info,
   success,
@@ -134,13 +156,13 @@ export const basePalette = {
 
 export const palette: Record<ThemeColorScheme, ColorSystemOptions['palette']> = {
   light: {
-    ...basePalette,
+    ...basePaletteLight,
     text: text.light,
     background: background.light,
     action: action.light,
   },
   dark: {
-    ...basePalette,
+    ...basePaletteDark,
     text: text.dark,
     background: background.dark,
     action: action.dark,
