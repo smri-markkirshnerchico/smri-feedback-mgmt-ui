@@ -2,6 +2,9 @@
 
 import { useMemo, useState, useCallback, lazy, Suspense, useEffect } from 'react';
 import useSWR from 'swr';
+import Skeleton from '@mui/material/Skeleton';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
 
 const StartFeedbackModal = lazy(() =>
   import('../start-feedback-modal').then((m) => ({ default: m.StartFeedbackModal }))
@@ -100,7 +103,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
 
-  const { data: needsMyReviewFeedback = [], mutate: mutateNeeds } = useSWR(
+  const { data: needsMyReviewFeedback = [], mutate: mutateNeeds, isValidating: needsValidating } = useSWR(
     endpoints.application.feedbackAssignment.root,
     async (url) => {
       const res = await axios.get<unknown[]>(url);
@@ -109,7 +112,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
     { revalidateOnFocus: true, revalidateOnReconnect: true }
   );
 
-  const { data: myFeedbackData = [], isLoading: myFeedbackLoading, mutate: mutateFeedback } = useSWR(
+  const { data: myFeedbackData = [], isValidating: myFeedbackValidating, mutate: mutateFeedback } = useSWR(
     `${endpoints.application.feedback.root}/my-feedback`,
     async (url) => {
       const res = await axios.get<FeedbackRequestDto[]>(url);
@@ -294,25 +297,39 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
               />
 
               <TableBody>
-                {dataFiltered.filter(row => row.id).map((row) => (
-                  <ReviewsFeedbackTableRow
-                    key={row.id || ''}
-                    row={row}
-                    showStartFeedbackButton={currentTab === 'needs-my-review'}
-                    onStartFeedback={
-                      currentTab === 'needs-my-review'
-                        ? () => router.push(paths.main.employee.provideFeedback(row.id))
-                        : undefined
-                    }
-                    onViewFeedback={
-                      currentTab === 'needs-my-review'
-                        ? () => router.push(paths.main.employee.provideFeedback(row.id, { view: true }))
-                        : undefined
-                    }
-                  />
-                ))}
+                {(needsValidating || myFeedbackValidating) ? (
+                  Array.from({ length: 5 }).map((_, idx) => (
+                    <TableRow key={idx}>
+                      {Array.from({ length: currentTab === 'needs-my-review' ? 5 : 7 }).map((__, cellIdx) => (
+                        <TableCell key={cellIdx}>
+                          <Skeleton variant="text" height={40} />
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <>
+                    {dataFiltered.filter(row => row.id).map((row) => (
+                      <ReviewsFeedbackTableRow
+                        key={row.id || ''}
+                        row={row}
+                        showStartFeedbackButton={currentTab === 'needs-my-review'}
+                        onStartFeedback={
+                          currentTab === 'needs-my-review'
+                            ? () => router.push(paths.main.employee.provideFeedback(row.id))
+                            : undefined
+                        }
+                        onViewFeedback={
+                          currentTab === 'needs-my-review'
+                            ? () => router.push(paths.main.employee.provideFeedback(row.id, { view: true }))
+                            : undefined
+                        }
+                      />
+                    ))}
 
-                <TableNoData notFound={!dataFiltered.filter(row => row.id).length} />
+                    <TableNoData notFound={!dataFiltered.filter(row => row.id).length} />
+                  </>
+                )}
               </TableBody>
             </Table>
           </Scrollbar>

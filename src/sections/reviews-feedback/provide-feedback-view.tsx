@@ -5,6 +5,7 @@ import { EMPTY_STAR_REMARKS, type FeedbackRating, type StarRemarks } from 'src/t
 import { useMemo, useState, useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
+import Skeleton from '@mui/material/Skeleton';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -47,7 +48,7 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
   const isViewMode = searchParams.get('view') === 'true';
   const reviewsFeedbackPath = needsMyReviewPath.replace(/\/needs-my-review\/?$/, '/my-feedback');
 
-  const { data: assignments = [], mutate: mutateAssignments } = useSWR<Record<string, unknown>[]>(
+  const { data: assignments = [], mutate: mutateAssignments, isValidating } = useSWR<Record<string, unknown>[]>(
     endpoints.application.feedbackAssignment.root,
     async (url: string) => {
       const res = await axios.get<unknown[]>(url);
@@ -229,37 +230,51 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
           boxShadow: 'none',
         }}
       >
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <Avatar src={avatarUrl} alt={employeeName} sx={{ width: 56, height: 56 }}>
-            {employeeName.charAt(0)}
-          </Avatar>
-          <Box sx={{ flex: 1 }}>
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              {employeeName}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {emailFromName(employeeName)}
-            </Typography>
-            <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-              <Label
-                variant="soft"
-                color="default"
-                startIcon={<Iconify icon="solar:case-minimalistic-bold" width={16} />}
-                sx={{ bgcolor: 'action.hover', color: 'text.secondary' }}
-              >
-                {category}
-              </Label>
-              <Label
-                variant="soft"
-                color="default"
-                startIcon={<Iconify icon="solar:calendar-minimalistic-bold" width={16} />}
-                sx={{ bgcolor: 'action.hover', color: 'text.secondary' }}
-              >
-                {year}
-              </Label>
-            </Stack>
-          </Box>
-        </Stack>
+        {isValidating ? (
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Skeleton variant="circular" width={56} height={56} />
+            <Box sx={{ flex: 1 }}>
+              <Skeleton variant="text" height={32} sx={{ mb: 1 }} />
+              <Skeleton variant="text" height={20} sx={{ mb: 2 }} />
+              <Stack direction="row" spacing={1}>
+                <Skeleton variant="rounded" width={120} height={24} />
+                <Skeleton variant="rounded" width={100} height={24} />
+              </Stack>
+            </Box>
+          </Stack>
+        ) : (
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Avatar src={avatarUrl} alt={employeeName} sx={{ width: 56, height: 56 }}>
+              {employeeName.charAt(0)}
+            </Avatar>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                {employeeName}
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                {emailFromName(employeeName)}
+              </Typography>
+              <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                <Label
+                  variant="soft"
+                  color="default"
+                  startIcon={<Iconify icon="solar:case-minimalistic-bold" width={16} />}
+                  sx={{ bgcolor: 'action.hover', color: 'text.secondary' }}
+                >
+                  {category}
+                </Label>
+                <Label
+                  variant="soft"
+                  color="default"
+                  startIcon={<Iconify icon="solar:calendar-minimalistic-bold" width={16} />}
+                  sx={{ bgcolor: 'action.hover', color: 'text.secondary' }}
+                >
+                  {year}
+                </Label>
+              </Stack>
+            </Box>
+          </Stack>
+        )}
       </Card>
 
       <Stack
