@@ -23,7 +23,6 @@ import { RouterLink } from 'src/routes/components';
 import { readField } from './map-feedback-assignment';
 import { PERFORMANCE_CRITERIA } from './provide-feedback-constants';
 import { FeedbackDetailsCriterionCard } from './feedback-details-criterion-card';
-import { loadFeedbackSubmission } from './feedback-submission-storage';
 import {
   getDefaultSubmittedFeedback,
   mapStoredSubmissionToDetails,
@@ -92,13 +91,18 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
       return res.data.filter(
         (item): item is Record<string, unknown> => item != null && typeof item === 'object'
       );
+    },
+    {
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+      dedupingInterval: 0,
     }
   );
 
-  // Fetch data on mount
+  // Fetch fresh data on mount to ensure latest submissions
   useEffect(() => {
     mutateAssignments();
-  }, [mutateAssignments]);
+  }, [mutateAssignments, assignmentId]);
 
   const assignment = useMemo(
     () =>
@@ -128,28 +132,45 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
   useEffect(() => {
     if (!assignment) return;
 
-    // Try API data first
-    const apiRatings = assignment['ratings'] as Record<string, unknown> | undefined;
-    const apiStarRemarksByCriterion = assignment['starRemarksByCriterion'] as Record<string, unknown> | undefined;
-    const apiOverallComments = assignment['overallComments'] as string | undefined;
-    const apiStarRemarks = assignment['starRemarks'] as any;
+    // Always use API data (API uses PascalCase keys)
+    const apiRatings = assignment['Ratings'] as Record<string, unknown> | undefined;
+    const apiStarRemarksByCriterion = assignment['StarRemarksByCriterion'] as Record<string, any> | undefined;
+    const apiOverallComments = assignment['OverallComments'] as string | undefined;
+    const apiStarRemarks = assignment['StarRemarks'] as any;
 
     if (apiRatings && Object.keys(apiRatings).length > 0) {
-      setCriterionDetails(
-        mapStoredSubmissionToDetails(apiRatings as Record<string, any>, apiStarRemarksByCriterion as Record<string, any> ?? {})
-      );
-      setOverallComments(apiOverallComments ?? '');
-      setStarRemarks(apiStarRemarks ?? null);
-      return;
-    }
+      // Transform API star remarks from PascalCase to camelCase
+      const transformedStarRemarks: Record<string, any> = {};
+      if (apiStarRemarksByCriterion) {
+        for (const [key, remarks] of Object.entries(apiStarRemarksByCriterion)) {
+          transformedStarRemarks[key] = {
+            situation: remarks.Situation || '',
+            task: remarks.Task || '',
+            action: remarks.Action || '',
+            result: remarks.Result || '',
+          };
+        }
+      }
 
-    // Fall back to sessionStorage (covers optimistic UX on same device before refetch)
-    const stored = loadFeedbackSubmission(assignmentId);
-    if (stored?.ratings && Object.keys(stored.ratings).length > 0) {
-      setCriterionDetails(mapStoredSubmissionToDetails(stored.ratings, stored.starRemarksByCriterion));
-      setOverallComments(stored.overallComments ?? '');
-      setStarRemarks(stored.starRemarks ?? null);
+      setCriterionDetails(
+        mapStoredSubmissionToDetails(apiRatings as Record<string, any>, transformedStarRemarks)
+      );
+
+      // Transform overall star remarks if present
+      let transformedOverallStarRemarks = null;
+      if (apiStarRemarks) {
+        transformedOverallStarRemarks = {
+          situation: apiStarRemarks.Situation || '',
+          task: apiStarRemarks.Task || '',
+          action: apiStarRemarks.Action || '',
+          result: apiStarRemarks.Result || '',
+        };
+      }
+
+      setOverallComments(apiOverallComments ?? '');
+      setStarRemarks(transformedOverallStarRemarks);
     } else {
+      // No submitted data in API, show defaults
       setCriterionDetails(getDefaultSubmittedFeedback());
       setOverallComments('');
       setStarRemarks(null);
