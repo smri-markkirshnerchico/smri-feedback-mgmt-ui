@@ -124,13 +124,27 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
   const [criterionDetails, setCriterionDetails] = useState(getDefaultSubmittedFeedback);
 
   useEffect(() => {
+    if (!assignment) return;
+
+    // Try API data first
+    const apiRatings = assignment['ratings'] as Record<string, unknown> | undefined;
+    const apiStarRemarksByCriterion = assignment['starRemarksByCriterion'] as Record<string, unknown> | undefined;
+
+    if (apiRatings && Object.keys(apiRatings).length > 0) {
+      setCriterionDetails(
+        mapStoredSubmissionToDetails(apiRatings as Record<string, any>, apiStarRemarksByCriterion as Record<string, any> ?? {})
+      );
+      return;
+    }
+
+    // Fall back to sessionStorage (covers optimistic UX on same device before refetch)
     const stored = loadFeedbackSubmission(assignmentId);
     if (stored?.ratings && Object.keys(stored.ratings).length > 0) {
       setCriterionDetails(mapStoredSubmissionToDetails(stored.ratings, stored.starRemarksByCriterion));
     } else {
       setCriterionDetails(getDefaultSubmittedFeedback());
     }
-  }, [assignmentId]);
+  }, [assignment, assignmentId]);
 
   const criteriaById = useMemo(
     () => Object.fromEntries(PERFORMANCE_CRITERIA.map((c) => [c.id, c])),

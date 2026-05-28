@@ -110,10 +110,10 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
     setIsSubmitting(true);
     try {
       const feedbackPayload = {
-        assignmentId,
-        ratings,
-        starRemarks: allRatedAsME ? starRemarks : null,
-        overallComments: allRatedAsME ? null : overallComments,
+        ratings: ratings as Record<string, FeedbackRating>,
+        starRemarksByCriterion: allRatedAsME ? undefined : starRemarksByCriterion,
+        overallComments: allRatedAsME ? undefined : (overallComments || undefined),
+        starRemarks: allRatedAsME ? starRemarks : undefined,
       };
 
       console.log('Submitting feedback:', feedbackPayload);
