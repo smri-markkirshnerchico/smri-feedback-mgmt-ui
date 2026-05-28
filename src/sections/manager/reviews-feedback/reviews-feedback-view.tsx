@@ -44,7 +44,7 @@ const TABLE_HEAD: TableHeadCellProps[] = [
   { id: 'status', label: 'Status', width: 160 },
   { id: 'completion', label: 'Completion', width: 110 },
   { id: 'reviewer', label: 'Reviewer', width: 160 },
-  { id: 'avgScore', label: 'Avg. Score', width: 90 },
+  { id: 'avgScore', label: 'Avg. Score', width: 120 },
 ];
 
 const TAB_PATHS: Record<ReviewFeedbackTab, string> = {
