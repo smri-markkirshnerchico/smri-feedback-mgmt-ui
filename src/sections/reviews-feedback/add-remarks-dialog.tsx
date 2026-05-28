@@ -114,7 +114,7 @@ export function AddRemarksDialog({
           sx={{
             p: 2,
             borderRadius: 1.5,
-            borderColor: 'rgba(145, 158, 171, 0.2)',
+          borderColor: 'divider',
             boxShadow: 'none',
           }}
         >
@@ -128,8 +128,8 @@ export function AddRemarksDialog({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                bgcolor: 'rgba(16, 47, 246, 0.08)',
-                color: '#102FF6',
+                bgcolor: 'primary.lighter',
+                color: 'primary.main',
                 fontWeight: 700,
                 fontSize: 14,
               }}
@@ -165,8 +165,8 @@ export function AddRemarksDialog({
                       fontWeight: 700,
                       fontSize: 13,
                       color: selected ? item.color : 'text.disabled',
-                      borderColor: selected ? item.color : 'rgba(145, 158, 171, 0.24)',
-                      bgcolor: selected ? item.bgcolor : 'rgba(145, 158, 171, 0.08)',
+                      borderColor: selected ? item.color : 'divider',
+                      bgcolor: selected ? item.bgcolor : 'background.neutral',
                     }}
                   >
                     <Iconify icon={item.icon} width={18} />
@@ -202,7 +202,7 @@ export function AddRemarksDialog({
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 1.5,
                     bgcolor: 'background.neutral',
-                    '& fieldset': { borderColor: 'rgba(145, 158, 171, 0.2)' },
+                    '& fieldset': { borderColor: 'divider' },
                   },
                 }}
               />
@@ -220,7 +220,7 @@ export function AddRemarksDialog({
             px: 2.5,
             fontWeight: 700,
             textTransform: 'none',
-            borderColor: 'rgba(145, 158, 171, 0.32)',
+            borderColor: 'divider',
             color: 'text.primary',
           }}
         >
@@ -235,9 +235,9 @@ export function AddRemarksDialog({
             px: 2.5,
             fontWeight: 700,
             textTransform: 'none',
-            bgcolor: canConfirm ? '#102FF6' : 'rgba(145, 158, 171, 0.24)',
-            color: canConfirm ? 'common.white' : 'rgba(145, 158, 171, 0.8)',
-            '&:hover': { bgcolor: canConfirm ? '#0919d4' : 'rgba(145, 158, 171, 0.24)' },
+            bgcolor: canConfirm ? 'primary.main' : 'action.disabledBackground',
+            color: canConfirm ? 'primary.contrastText' : 'text.disabled',
+            '&:hover': { bgcolor: canConfirm ? 'primary.dark' : 'action.disabledBackground' },
           }}
         >
           Confirm

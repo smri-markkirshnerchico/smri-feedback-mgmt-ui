@@ -97,9 +97,9 @@ export function AddCommentDialog({
           sx={{
             '& .MuiOutlinedInput-root': {
               borderRadius: 1.5,
-              '& fieldset': { borderColor: 'rgba(145, 158, 171, 0.32)' },
-              '&:hover fieldset': { borderColor: 'rgba(145, 158, 171, 0.48)' },
-              '&.Mui-focused fieldset': { borderColor: '#102FF6' },
+              '& fieldset': { borderColor: 'divider' },
+              '&:hover fieldset': { borderColor: 'text.disabled' },
+              '&.Mui-focused fieldset': { borderColor: 'primary.main' },
             },
             '& .MuiInputLabel-root': {
               fontSize: 14,
@@ -125,11 +125,11 @@ export function AddCommentDialog({
             fontWeight: 700,
             fontSize: 15,
             textTransform: 'none',
-            color: '#FF5630',
-            borderColor: 'rgba(255, 86, 48, 0.48)',
+            color: 'error.main',
+            borderColor: 'error.light',
             '&:hover': {
-              borderColor: '#FF5630',
-              bgcolor: 'rgba(255, 86, 48, 0.08)',
+              borderColor: 'error.main',
+              bgcolor: 'error.lighter',
             },
           }}
         >
@@ -147,8 +147,8 @@ export function AddCommentDialog({
               fontSize: 15,
               textTransform: 'none',
               color: 'text.primary',
-              borderColor: 'rgba(145, 158, 171, 0.32)',
-              '&:hover': { bgcolor: 'rgba(145, 158, 171, 0.08)' },
+              borderColor: 'divider',
+              '&:hover': { bgcolor: 'action.hover' },
             }}
           >
             Cancel
@@ -163,8 +163,8 @@ export function AddCommentDialog({
               fontWeight: 700,
               fontSize: 15,
               textTransform: 'none',
-              bgcolor: '#102FF6',
-              '&:hover': { bgcolor: '#0919d4' },
+              bgcolor: 'primary.main',
+              '&:hover': { bgcolor: 'primary.dark' },
             }}
           >
             {isEdit ? 'Update' : 'Add Comment'}

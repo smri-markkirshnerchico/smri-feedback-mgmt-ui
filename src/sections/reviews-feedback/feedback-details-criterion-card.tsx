@@ -82,8 +82,8 @@ export function FeedbackDetailsCriterionCard({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            bgcolor: 'rgba(16, 47, 246, 0.08)',
-            color: '#102FF6',
+            bgcolor: 'primary.lighter',
+            color: 'primary.main',
             fontWeight: 700,
             fontSize: 14,
           }}
@@ -94,11 +94,11 @@ export function FeedbackDetailsCriterionCard({
         <Box sx={{ flex: 1, minWidth: 0, pt: 0.25 }}>
           <Typography
             variant="subtitle1"
-            sx={{ fontWeight: 700, mb: 0.5, color: '#1A1A1A', fontSize: 15, lineHeight: 1.4 }}
+            sx={{ fontWeight: 700, mb: 0.5, color: 'text.primary', fontSize: 15, lineHeight: 1.4 }}
           >
             {criterion.title}
           </Typography>
-          <Typography variant="body2" sx={{ color: '#637381', lineHeight: 1.6, fontSize: 14 }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.6, fontSize: 14 }}>
             {criterion.description}
           </Typography>
         </Box>
@@ -119,7 +119,7 @@ export function FeedbackDetailsCriterionCard({
               width: 32,
               height: 32,
               p: 0,
-              color: '#637381',
+              color: 'text.secondary',
               visibility: expandable ? 'visible' : 'hidden',
             }}
           >
@@ -151,7 +151,7 @@ export function FeedbackDetailsCriterionCard({
                   sx={{
                     p: 2,
                     borderRadius: '12px',
-                    bgcolor: '#F4F6F8',
+                    bgcolor: 'background.neutral',
                     width: 1,
                   }}
                 >
@@ -160,7 +160,7 @@ export function FeedbackDetailsCriterionCard({
                     sx={{
                       display: 'block',
                       mb: 0.75,
-                      color: '#919EAB',
+                      color: 'text.disabled',
                       fontWeight: 400,
                       fontSize: 12,
                       lineHeight: 1.5,
@@ -171,7 +171,7 @@ export function FeedbackDetailsCriterionCard({
                   <Typography
                     variant="body2"
                     sx={{
-                      color: '#1A1A1A',
+                      color: 'text.primary',
                       lineHeight: 1.7,
                       fontSize: 14,
                     }}

@@ -175,7 +175,7 @@ export function FeedbackListApprovalModal({
           px: 3,
           py: 1.5,
           gap: 2,
-          bgcolor: '#F9FAFB',
+          bgcolor: 'background.neutral',
           minHeight: 72,
           borderBottom: '1px dashed',
           borderColor: 'divider',
@@ -220,19 +220,19 @@ export function FeedbackListApprovalModal({
             onClick={handleReject}
             loading={rejecting}
             variant="outlined"
-            startIcon={<Iconify icon="mingcute:close-line" width={18} sx={{ color: '#FF5630' }} />}
+            startIcon={<Iconify icon="mingcute:close-line" width={18} sx={{ color: 'error.main' }} />}
             sx={{
               height: 48,
               px: 2,
               fontWeight: 700,
               fontSize: 17,
               textTransform: 'none',
-              color: '#FF5630',
-              borderColor: 'rgba(255, 86, 48, 0.48)',
-              bgcolor: 'common.white',
+              color: 'error.main',
+              borderColor: 'error.light',
+              bgcolor: 'background.paper',
               '&:hover': {
-                borderColor: '#FF5630',
-                bgcolor: 'rgba(255, 86, 48, 0.08)',
+                borderColor: 'error.main',
+                bgcolor: 'error.lighter',
               },
             }}
           >
@@ -250,8 +250,8 @@ export function FeedbackListApprovalModal({
               fontWeight: 700,
               fontSize: 17,
               textTransform: 'none',
-              bgcolor: '#102FF6',
-              '&:hover': { bgcolor: '#0919d4' },
+              bgcolor: 'primary.main',
+              '&:hover': { bgcolor: 'primary.dark' },
             }}
           >
             Approve List
@@ -288,7 +288,7 @@ export function FeedbackListApprovalModal({
                 width: 340,
                 flexShrink: 0,
                 borderRadius: 1.5,
-                borderColor: 'rgba(145, 158, 171, 0.2)',
+                borderColor: 'divider',
                 boxShadow: 'none',
               }}
             >
@@ -358,7 +358,7 @@ export function FeedbackListApprovalModal({
                   width: 36,
                   height: 20,
                   borderRadius: '10px',
-                  bgcolor: 'rgba(145, 158, 171, 0.48)',
+                  bgcolor: 'action.disabled',
                   display: 'flex',
                   alignItems: 'center',
                   px: '3px',
@@ -380,7 +380,7 @@ export function FeedbackListApprovalModal({
               fontWeight: 500,
               fontSize: 13,
               lineHeight: '20px',
-              color: '#919EAB',
+                  color: 'text.disabled',
               letterSpacing: '0.05em',
               textTransform: 'uppercase',
             }}
@@ -470,7 +470,7 @@ export function FeedbackListApprovalModal({
                 <Button
                   variant="outlined"
                   onClick={() => handleOpenComment(provider.id)}
-                  startIcon={<Iconify icon="solar:pen-bold" width={20} sx={{ color: '#102FF6' }} />}
+                  startIcon={<Iconify icon="solar:pen-bold" width={20} sx={{ color: 'primary.main' }} />}
                   endIcon={
                     <Box
                       component="span"
@@ -478,7 +478,7 @@ export function FeedbackListApprovalModal({
                         width: 22,
                         height: 22,
                         borderRadius: '50%',
-                        bgcolor: '#FF5630',
+                        bgcolor: 'error.main',
                         display: 'inline-flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -501,14 +501,14 @@ export function FeedbackListApprovalModal({
                     textTransform: 'none',
                     fontWeight: 700,
                     fontSize: 15,
-                    color: '#102FF6',
-                    borderColor: 'rgba(16, 47, 246, 0.32)',
-                    bgcolor: 'common.white',
+                    color: 'primary.main',
+                    borderColor: 'primary.light',
+                    bgcolor: 'background.paper',
                     '& .MuiButton-startIcon': { mr: 0.5 },
                     '& .MuiButton-endIcon': { ml: 1 },
                     '&:hover': {
-                      borderColor: '#102FF6',
-                      bgcolor: 'rgba(16, 47, 246, 0.04)',
+                      borderColor: 'primary.main',
+                      bgcolor: 'primary.lighter',
                     },
                   }}
                 >
@@ -561,8 +561,8 @@ const selectSx = {
   height: 56,
   borderRadius: 1,
   fontSize: 14,
-  '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(145, 158, 171, 0.2)' },
-  '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(145, 158, 171, 0.4)' },
+  '& .MuiOutlinedInput-notchedOutline': { borderColor: 'divider' },
+  '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'text.disabled' },
   '& .MuiSelect-select': { color: 'text.primary' },
 };
 
@@ -577,6 +577,6 @@ const fieldSx = {
   '& .MuiOutlinedInput-root': {
     borderRadius: 1,
     bgcolor: 'background.neutral',
-    '& fieldset': { borderColor: 'rgba(145, 158, 171, 0.2)' },
+    '& fieldset': { borderColor: 'divider' },
   },
 };

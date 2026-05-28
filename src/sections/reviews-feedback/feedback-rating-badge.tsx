@@ -6,6 +6,8 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
+import { varAlpha } from 'minimal-shared/utils';
+
 import { Iconify } from 'src/components/iconify';
 
 import { RATING_SCALE } from './provide-feedback-constants';
@@ -34,7 +36,10 @@ export function FeedbackRatingBadge({ rating }: Readonly<Props>) {
         width: RATING_BADGE_WIDTH,
         height: RATING_BADGE_HEIGHT,
         borderRadius: '8px',
-        bgcolor: ratingMeta.badgeBg,
+        bgcolor: (theme) =>
+          theme.palette.mode === 'dark'
+            ? varAlpha(ratingMeta.badgeColor, 0.24)
+            : ratingMeta.badgeBg,
         flexShrink: 0,
       }}
     >

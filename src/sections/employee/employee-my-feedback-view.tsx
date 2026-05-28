@@ -27,7 +27,7 @@ export function EmployeeMyFeedbackView() {
               fontSize: '32px',
               fontWeight: 700,
               lineHeight: '48px',
-              color: '#102FF6',
+              color: 'primary.main',
               mb: 1
             }}
           >
@@ -39,7 +39,7 @@ export function EmployeeMyFeedbackView() {
               fontSize: '16px',
               fontWeight: 400,
               lineHeight: '24px',
-              color: '#1C252E'
+              color: 'text.primary'
             }}
           >
             Supporting employee development through regular reviews and open communication
@@ -50,8 +50,8 @@ export function EmployeeMyFeedbackView() {
           onClick={() => setModalOpen(true)}
           sx={{
             fontFamily: 'Henry Sans',
-            backgroundColor: '#102FF6',
-            color: '#FFFFFF',
+            backgroundColor: 'primary.main',
+            color: 'primary.contrastText',
             fontSize: '15px',
             fontWeight: 700,
             padding: '8px 16px',
@@ -60,7 +60,7 @@ export function EmployeeMyFeedbackView() {
             height: '48px',
             minWidth: '210px',
             '&:hover': {
-              backgroundColor: '#0919d4'
+              backgroundColor: 'primary.dark'
             }
           }}
         >
@@ -95,7 +95,7 @@ export function EmployeeMyFeedbackView() {
             fontSize: '16px',
             fontWeight: 600,
             lineHeight: '24px',
-            color: '#1C252E',
+            color: 'text.primary',
             mb: 3
           }}
         >
@@ -108,17 +108,17 @@ export function EmployeeMyFeedbackView() {
           onClick={() => setModalOpen(true)}
           sx={{
             fontFamily: 'Henry Sans',
-            borderColor: '#102FF6',
-            color: '#102FF6',
+            borderColor: 'primary.main',
+            color: 'primary.main',
             fontSize: '14px',
             fontWeight: 700,
             padding: '8px 16px',
             borderRadius: '8px',
             textTransform: 'none',
-            border: '1px solid #102FF6',
+            border: '1px solid',
             '&:hover': {
-              backgroundColor: 'rgba(16, 47, 246, 0.08)',
-              borderColor: '#102FF6'
+              backgroundColor: 'primary.lighter',
+              borderColor: 'primary.main'
             }
           }}
         >

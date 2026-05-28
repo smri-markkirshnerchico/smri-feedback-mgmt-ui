@@ -172,17 +172,18 @@ export function StartFeedbackModal({ open, onClose }: Props) {
           px: '24px',
           py: '12px',
           gap: '16px',
-          bgcolor: '#F9FAFB',
+          bgcolor: 'background.neutral',
           minHeight: '72px',
-          borderBottom: '1px dashed rgba(145, 158, 171, 0.2)',
+          borderBottom: '1px dashed',
+          borderColor: 'divider',
           flexShrink: 0,
         }}
       >
-        <IconButton onClick={onClose} sx={{ p: '4px', color: '#1C252E' }}>
+        <IconButton onClick={onClose} sx={{ p: '4px', color: 'text.primary' }}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path
               d="M18 6L6 18M6 6l12 12"
-              stroke="#1C252E"
+              stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -196,7 +197,7 @@ export function StartFeedbackModal({ open, onClose }: Props) {
             fontWeight: 700,
             fontSize: '22px',
             lineHeight: '32px',
-            color: '#1C252E',
+            color: 'text.primary',
             flex: 1,
           }}
         >
@@ -209,13 +210,14 @@ export function StartFeedbackModal({ open, onClose }: Props) {
             sx={{
               fontWeight: 700,
               fontSize: '17px',
-              color: '#1C252E',
-              border: '1px solid rgba(145, 158, 171, 0.32)',
+              color: 'text.primary',
+              border: '1px solid',
+              borderColor: 'divider',
               borderRadius: '8px',
               px: '16px',
               height: '48px',
               textTransform: 'none',
-              '&:hover': { bgcolor: 'rgba(145, 158, 171, 0.08)' },
+              '&:hover': { bgcolor: 'action.hover' },
             }}
           >
             Cancel
@@ -232,12 +234,12 @@ export function StartFeedbackModal({ open, onClose }: Props) {
               px: '16px',
               height: '48px',
               textTransform: 'none',
-              bgcolor: isValid ? '#102FF6' : 'rgba(145, 158, 171, 0.24)',
-              color: isValid ? '#FFFFFF' : 'rgba(145, 158, 171, 0.8)',
-              '&:hover': { bgcolor: isValid ? '#0919d4' : 'rgba(145, 158, 171, 0.24)' },
+              bgcolor: isValid ? 'primary.main' : 'action.disabledBackground',
+              color: isValid ? 'primary.contrastText' : 'text.disabled',
+              '&:hover': { bgcolor: isValid ? 'primary.dark' : 'action.disabledBackground' },
               '&.Mui-disabled': {
-                bgcolor: 'rgba(145, 158, 171, 0.24)',
-                color: 'rgba(145, 158, 171, 0.8)',
+                bgcolor: 'action.disabledBackground',
+                color: 'text.disabled',
               },
             }}
           >
@@ -262,8 +264,8 @@ export function StartFeedbackModal({ open, onClose }: Props) {
               sx={{
                 fontSize: '14px',
                 fontWeight: 600,
-                color: '#637381',
-                '&.Mui-focused': { color: '#637381' },
+                color: 'text.secondary',
+                '&.Mui-focused': { color: 'text.secondary' },
               }}
             >
               Feedback Category
@@ -285,8 +287,8 @@ export function StartFeedbackModal({ open, onClose }: Props) {
               sx={{
                 fontSize: '14px',
                 fontWeight: 600,
-                color: '#637381',
-                '&.Mui-focused': { color: '#637381' },
+                color: 'text.secondary',
+                '&.Mui-focused': { color: 'text.secondary' },
               }}
             >
               Year
@@ -312,7 +314,7 @@ export function StartFeedbackModal({ open, onClose }: Props) {
                 width: 36,
                 height: 20,
                 borderRadius: '10px',
-                bgcolor: anonymous ? '#102FF6' : 'rgba(145, 158, 171, 0.48)',
+                bgcolor: anonymous ? 'primary.main' : 'action.disabled',
                 display: 'flex',
                 alignItems: 'center',
                 px: '3px',
@@ -326,13 +328,13 @@ export function StartFeedbackModal({ open, onClose }: Props) {
                   width: 14,
                   height: 14,
                   borderRadius: '50%',
-                  bgcolor: '#FFFFFF',
+                  bgcolor: 'common.white',
                   transition: 'transform 300ms',
                   transform: anonymous ? 'translateX(16px)' : 'translateX(0)',
                 }}
               />
             </Box>
-            <Typography sx={{ fontSize: '16px', color: '#1C252E' }}>
+            <Typography sx={{ fontSize: '16px', color: 'text.primary' }}>
               Receive Anonymous Feedback
             </Typography>
           </Stack>
@@ -344,7 +346,7 @@ export function StartFeedbackModal({ open, onClose }: Props) {
             fontWeight: 500,
             fontSize: '13px',
             lineHeight: '20px',
-            color: '#919EAB',
+            color: 'text.disabled',
             letterSpacing: '0.05em',
           }}
         >
@@ -361,7 +363,7 @@ export function StartFeedbackModal({ open, onClose }: Props) {
                   width: 40,
                   height: 40,
                   borderRadius: '50%',
-                  bgcolor: '#DFE3E8',
+                  bgcolor: 'action.hover',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -369,7 +371,7 @@ export function StartFeedbackModal({ open, onClose }: Props) {
                   mt: '8px',
                 }}
               >
-                <Typography sx={{ fontWeight: 600, fontSize: '16px', color: '#637381' }}>
+                <Typography sx={{ fontWeight: 600, fontSize: '16px', color: 'text.secondary' }}>
                   {index + 1}
                 </Typography>
               </Box>
@@ -433,11 +435,11 @@ export function StartFeedbackModal({ open, onClose }: Props) {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: '8px',
                       height: '56px',
-                      '& fieldset': { borderColor: 'rgba(145, 158, 171, 0.2)' },
-                      '&:hover fieldset': { borderColor: 'rgba(145, 158, 171, 0.4)' },
-                      '&.Mui-focused fieldset': { borderColor: '#102FF6' },
+                      '& fieldset': { borderColor: 'divider' },
+                      '&:hover fieldset': { borderColor: 'text.disabled' },
+                      '&.Mui-focused fieldset': { borderColor: 'primary.main' },
                     },
-                    '& .MuiInputBase-input::placeholder': { color: '#919EAB', opacity: 1 },
+                    '& .MuiInputBase-input::placeholder': { color: 'text.disabled', opacity: 1 },
                   }}
                 />
               )}
@@ -454,18 +456,18 @@ export function StartFeedbackModal({ open, onClose }: Props) {
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
                     alignItems: 'flex-start',
-                    '& fieldset': { borderColor: 'rgba(145, 158, 171, 0.2)' },
-                    '&:hover fieldset': { borderColor: 'rgba(145, 158, 171, 0.4)' },
-                    '&.Mui-focused fieldset': { borderColor: '#102FF6' },
+                    '& fieldset': { borderColor: 'divider' },
+                    '&:hover fieldset': { borderColor: 'text.disabled' },
+                    '&.Mui-focused fieldset': { borderColor: 'primary.main' },
                   },
-                  '& .MuiInputBase-input::placeholder': { color: '#919EAB', opacity: 1 },
+                  '& .MuiInputBase-input::placeholder': { color: 'text.disabled', opacity: 1 },
                 }}
                 InputProps={{ sx: { minHeight: '98px', alignItems: 'flex-start', py: '16px' } }}
               />
             </Stack>
 
             {index < rows.length - 1 && (
-              <Box sx={{ mt: '24px', borderBottom: '1px dashed rgba(145, 158, 171, 0.2)' }} />
+              <Box sx={{ mt: '24px', borderBottom: '1px dashed', borderColor: 'divider' }} />
             )}
           </Box>
         ))}
@@ -484,7 +486,7 @@ export function StartFeedbackModal({ open, onClose }: Props) {
           {/* Center Section */}
           <Stack alignItems="center" gap={3} sx={{ mb: 4, textAlign: 'center' }}>
             {/* Icon */}
-            <Iconify icon="mdi:email-send" sx={{ fontSize: 80, color: '#17B26A' }} />
+            <Iconify icon="mdi:email-send" sx={{ fontSize: 80, color: 'success.main' }} />
 
             {/* Question */}
             <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '20px' }}>
@@ -498,7 +500,7 @@ export function StartFeedbackModal({ open, onClose }: Props) {
           </Stack>
 
           {/* Approver Section */}
-          <Stack sx={{ p: 2, border: '1px solid #E8EAF6', borderRadius: 1, mb: 2 }}>
+          <Stack sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1, mb: 2 }}>
             <Stack direction="row" alignItems="flex-start" gap={2}>
               <Avatar sx={{ width: 56, height: 56, mt: 0.5 }} />
               <Stack gap={0.5}>
@@ -513,14 +515,14 @@ export function StartFeedbackModal({ open, onClose }: Props) {
           </Stack>
 
           {/* Feedback Providers */}
-          <Stack sx={{ p: 2, border: '1px solid #E8EAF6', borderRadius: 1, mb: 4 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#919EAB', mb: 2 }}>
+          <Stack sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1, mb: 4 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.disabled', mb: 2 }}>
               Feedback Providers ({selectedProviders.length})
             </Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
               {selectedProviders.map((provider, idx) => (
                 <Stack key={idx} direction="row" alignItems="center" gap={1.5}>
-                  <Avatar sx={{ width: 44, height: 44, fontSize: 14, fontWeight: 600, bgcolor: '#E8EEF5', color: '#637381' }}>
+                  <Avatar sx={{ width: 44, height: 44, fontSize: 14, fontWeight: 600, bgcolor: 'background.neutral', color: 'text.secondary' }}>
                     {provider?.name?.charAt(0).toUpperCase()}
                   </Avatar>
                   <Typography variant="body2" sx={{ fontWeight: 500 }}>
@@ -544,7 +546,7 @@ export function StartFeedbackModal({ open, onClose }: Props) {
               variant="contained"
               loading={submitting}
               onClick={handleSubmit}
-              sx={{ borderRadius: 1, px: 4, fontWeight: 600, bgcolor: '#102FF6', color: 'white', '&:hover': { bgcolor: '#0919d4' } }}
+              sx={{ borderRadius: 1, px: 4, fontWeight: 600, bgcolor: 'primary.main', color: 'primary.contrastText', '&:hover': { bgcolor: 'primary.dark' } }}
             >
               Proceed
             </LoadingButton>
@@ -560,15 +562,15 @@ export function StartFeedbackModal({ open, onClose }: Props) {
 const selectSx = {
   height: '56px',
   borderRadius: '8px',
-  '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(145, 158, 171, 0.2)' },
-  '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(145, 158, 171, 0.4)' },
-  '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#102FF6' },
-  '& .MuiSelect-select': { color: '#1C252E' },
+  '& .MuiOutlinedInput-notchedOutline': { borderColor: 'divider' },
+  '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'text.disabled' },
+  '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
+  '& .MuiSelect-select': { color: 'text.primary' },
 };
 
 const labelSx = {
   fontSize: '14px',
   fontWeight: 600,
-  color: '#637381',
-  '&.Mui-focused': { color: '#637381' },
+  color: 'text.secondary',
+  '&.Mui-focused': { color: 'text.secondary' },
 };

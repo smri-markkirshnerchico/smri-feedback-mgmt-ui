@@ -24,7 +24,7 @@ function DetailRow({ label, value }: { label: string; value: string }) {
       <Typography
         variant="caption"
         sx={{
-          color: '#808080',
+          color: 'text.secondary',
           fontSize: 12,
           lineHeight: 1.5,
           fontWeight: 400,
@@ -35,7 +35,7 @@ function DetailRow({ label, value }: { label: string; value: string }) {
       <Typography
         variant="body2"
         sx={{
-          color: '#1A1A1A',
+          color: 'text.primary',
           fontSize: 14,
           lineHeight: 1.5,
           fontWeight: 600,
@@ -86,7 +86,7 @@ export function EmployeeToBeReviewedCard({
           fontWeight: 700,
           fontSize: 18,
           lineHeight: 1.4,
-          color: '#1A1A1A',
+          color: 'text.primary',
           mb: 3,
           textAlign: 'left',
         }}
@@ -114,7 +114,7 @@ export function EmployeeToBeReviewedCard({
             fontWeight: 700,
             fontSize: 16,
             lineHeight: 1.5,
-            color: '#1A1A1A',
+            color: 'text.primary',
             textAlign: 'center',
           }}
         >
@@ -126,7 +126,7 @@ export function EmployeeToBeReviewedCard({
           sx={{
             fontSize: 14,
             lineHeight: 1.5,
-            color: '#808080',
+            color: 'text.secondary',
             fontWeight: 400,
             textAlign: 'center',
           }}

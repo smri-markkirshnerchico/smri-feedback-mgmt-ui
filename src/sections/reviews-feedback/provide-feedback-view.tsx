@@ -166,7 +166,7 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
           px: 2.5,
           fontWeight: 700,
           textTransform: 'none',
-          borderColor: 'rgba(145, 158, 171, 0.32)',
+          borderColor: 'divider',
           color: 'text.primary',
         }}
       >
@@ -182,9 +182,9 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
           px: 2.5,
           fontWeight: 700,
           textTransform: 'none',
-          bgcolor: (canSubmit && !isSubmitting) ? '#102FF6' : 'rgba(145, 158, 171, 0.24)',
-          color: (canSubmit && !isSubmitting) ? 'common.white' : 'rgba(145, 158, 171, 0.8)',
-          '&:hover': { bgcolor: (canSubmit && !isSubmitting) ? '#0919d4' : 'rgba(145, 158, 171, 0.24)' },
+          bgcolor: (canSubmit && !isSubmitting) ? 'primary.main' : 'action.disabledBackground',
+          color: (canSubmit && !isSubmitting) ? 'primary.contrastText' : 'text.disabled',
+          '&:hover': { bgcolor: (canSubmit && !isSubmitting) ? 'primary.dark' : 'action.disabledBackground' },
         }}
       >
         Submit Feedback
@@ -213,7 +213,7 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
           gap: 2,
         })}
       >
-        <Typography variant="h4" sx={{ fontWeight: 800, color: '#102FF6' }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main' }}>
           Provide Feedback
         </Typography>
 
@@ -226,7 +226,7 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
           p: 2.5,
           mb: 3,
           borderRadius: 2,
-          borderColor: 'rgba(145, 158, 171, 0.2)',
+          borderColor: 'divider',
           boxShadow: 'none',
         }}
       >
@@ -234,7 +234,7 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
           <Box sx={{
             p: 2.5,
             borderRadius: 2,
-            borderColor: 'rgba(145, 158, 171, 0.2)',
+            borderColor: 'divider',
             boxShadow: (theme) => theme.vars?.customShadows?.z1,
             bgcolor: 'background.paper'
           }}>
@@ -350,8 +350,8 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
           py: 1.5,
           mb: 3,
           borderRadius: 2,
-          bgcolor: 'rgba(145, 158, 171, 0.08)',
-          borderColor: 'rgba(145, 158, 171, 0.2)',
+          bgcolor: 'background.neutral',
+          borderColor: 'divider',
           boxShadow: 'none',
         }}
       >
@@ -371,7 +371,7 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
           p: 2.5,
           mb: 3,
           borderRadius: 2,
-          borderColor: 'rgba(145, 158, 171, 0.2)',
+          borderColor: 'divider',
           boxShadow: 'none',
         }}
       >

@@ -155,7 +155,7 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
           variant="h4"
           sx={{
             fontWeight: 800,
-            color: '#102FF6',
+            color: 'primary.main',
             fontSize: { xs: 22, md: 28 },
             lineHeight: 1.3,
             maxWidth: 900,
@@ -202,7 +202,7 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
             boxShadow: (theme) => theme.vars.customShadows.z1,
           }}
         >
-          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2.5, color: '#1A1A1A' }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2.5, color: 'text.primary' }}>
             Performance Criteria
           </Typography>
 

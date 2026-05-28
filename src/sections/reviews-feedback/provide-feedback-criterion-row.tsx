@@ -85,7 +85,7 @@ export function ProvideFeedbackCriterionRow({
         sx={{
           p: 2.5,
           borderRadius: 2,
-          borderColor: 'rgba(145, 158, 171, 0.2)',
+          borderColor: 'divider',
           boxShadow: 'none',
         }}
       >
@@ -99,8 +99,8 @@ export function ProvideFeedbackCriterionRow({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              bgcolor: 'rgba(16, 47, 246, 0.08)',
-              color: '#102FF6',
+              bgcolor: 'primary.lighter',
+              color: 'primary.main',
               fontWeight: 700,
               fontSize: 14,
             }}
@@ -135,8 +135,8 @@ export function ProvideFeedbackCriterionRow({
                     fontWeight: 700,
                     fontSize: 13,
                     color: selected ? item.color : 'text.secondary',
-                    borderColor: selected ? item.color : 'rgba(145, 158, 171, 0.32)',
-                    bgcolor: selected ? item.bgcolor : 'common.white',
+                    borderColor: selected ? item.color : 'divider',
+                    bgcolor: selected ? item.bgcolor : 'background.paper',
                     '&:hover': {
                       borderColor: item.color,
                       bgcolor: item.bgcolor,
@@ -164,14 +164,14 @@ export function ProvideFeedbackCriterionRow({
                 fontWeight: 600,
                 fontSize: 13,
                 whiteSpace: 'nowrap',
-                color: remarksFilled ? '#102FF6' : 'text.primary',
+                color: remarksFilled ? 'primary.main' : 'text.primary',
                 borderColor: remarksFilled
-                  ? 'rgba(16, 47, 246, 0.32)'
-                  : 'rgba(145, 158, 171, 0.32)',
+                  ? 'primary.light'
+                  : 'divider',
                 '&.Mui-disabled': {
-                  color: 'rgba(145, 158, 171, 0.48)',
-                  borderColor: 'rgba(145, 158, 171, 0.24)',
-                  bgcolor: 'rgba(145, 158, 171, 0.08)',
+                  color: 'text.disabled',
+                  borderColor: 'divider',
+                  bgcolor: 'action.disabledBackground',
                 },
               }}
             >
@@ -210,9 +210,9 @@ export function ProvideFeedbackCriterionRow({
           paper: {
             sx: {
               maxWidth: 450,
-              backgroundColor: '#ffffff',
+              backgroundColor: 'background.paper',
               borderRadius: 2,
-              boxShadow: '0 8px 16px rgba(0, 0, 0, 0.12)',
+              boxShadow: (theme) => theme.vars.customShadows.z8,
               mt: anchorOrigin.vertical === 'bottom' ? 1 : 0,
               mb: anchorOrigin.vertical === 'top' ? 1 : 0,
             },
