@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
+import Skeleton from '@mui/material/Skeleton';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -84,7 +85,7 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
   const searchParams = useSearchParams();
   const assignmentId = parseAssignmentId(searchParams);
 
-  const { data: assignments = [] } = useSWR<Record<string, unknown>[]>(
+  const { data: assignments = [], mutate: mutateAssignments, isValidating } = useSWR<Record<string, unknown>[]>(
     endpoints.application.feedbackAssignment.root,
     async (url: string) => {
       const res = await axios.get<unknown[]>(url);
@@ -93,6 +94,11 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
       );
     }
   );
+
+  // Fetch data on mount
+  useEffect(() => {
+    mutateAssignments();
+  }, [mutateAssignments]);
 
   const assignment = useMemo(
     () =>
@@ -224,15 +230,34 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
             top: { lg: 'calc(var(--layout-header-desktop-height) + 24px)' },
           }}
         >
-          <EmployeeToBeReviewedCard
-            employeeName={employeeName}
-            email={emailFromName(employeeName)}
-            avatarUrl={avatarUrl}
-            lineManager={lineManager}
-            dateTimeInitiated={dateTimeInitiated}
-            category={category}
-            year={year}
-          />
+          {isValidating ? (
+            <Card
+              sx={{
+                p: 3,
+                textAlign: 'center',
+                borderRadius: 2,
+                boxShadow: (theme) => theme.vars?.customShadows?.z1,
+              }}
+            >
+              <Skeleton variant="circular" width={80} height={80} sx={{ mx: 'auto', mb: 2 }} />
+              <Skeleton variant="text" height={32} width="60%" sx={{ mx: 'auto', mb: 1 }} />
+              <Skeleton variant="text" height={20} width="50%" sx={{ mx: 'auto', mb: 2 }} />
+              <Stack direction="row" spacing={1} justifyContent="center">
+                <Skeleton variant="rounded" width={100} height={24} />
+                <Skeleton variant="rounded" width={100} height={24} />
+              </Stack>
+            </Card>
+          ) : (
+            <EmployeeToBeReviewedCard
+              employeeName={employeeName}
+              email={emailFromName(employeeName)}
+              avatarUrl={avatarUrl}
+              lineManager={lineManager}
+              dateTimeInitiated={dateTimeInitiated}
+              category={category}
+              year={year}
+            />
+          )}
         </Box>
       </Box>
     </MainContent>

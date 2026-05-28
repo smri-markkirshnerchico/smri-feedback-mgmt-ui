@@ -231,17 +231,25 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
         }}
       >
         {isValidating ? (
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <Skeleton variant="circular" width={56} height={56} />
-            <Box sx={{ flex: 1 }}>
-              <Skeleton variant="text" height={32} sx={{ mb: 1 }} />
-              <Skeleton variant="text" height={20} sx={{ mb: 2 }} />
-              <Stack direction="row" spacing={1}>
-                <Skeleton variant="rounded" width={120} height={24} />
-                <Skeleton variant="rounded" width={100} height={24} />
-              </Stack>
-            </Box>
-          </Stack>
+          <Box sx={{
+            p: 2.5,
+            borderRadius: 2,
+            borderColor: 'rgba(145, 158, 171, 0.2)',
+            boxShadow: (theme) => theme.vars?.customShadows?.z1,
+            bgcolor: 'background.paper'
+          }}>
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Skeleton variant="circular" width={56} height={56} />
+              <Box sx={{ flex: 1 }}>
+                <Skeleton variant="text" height={32} sx={{ mb: 1 }} />
+                <Skeleton variant="text" height={20} sx={{ mb: 2 }} />
+                <Stack direction="row" spacing={1}>
+                  <Skeleton variant="rounded" width={120} height={24} />
+                  <Skeleton variant="rounded" width={100} height={24} />
+                </Stack>
+              </Box>
+            </Stack>
+          </Box>
         ) : (
           <Stack direction="row" alignItems="center" spacing={2}>
             <Avatar src={avatarUrl} alt={employeeName} sx={{ width: 56, height: 56 }}>
