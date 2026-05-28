@@ -122,6 +122,8 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
   const avatarUrl = `${CONFIG.assetsDir}/assets/images/mock/avatar/avatar-1.webp`;
 
   const [criterionDetails, setCriterionDetails] = useState(getDefaultSubmittedFeedback);
+  const [overallComments, setOverallComments] = useState('');
+  const [starRemarks, setStarRemarks] = useState<any>(null);
 
   useEffect(() => {
     if (!assignment) return;
@@ -129,11 +131,15 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
     // Try API data first
     const apiRatings = assignment['ratings'] as Record<string, unknown> | undefined;
     const apiStarRemarksByCriterion = assignment['starRemarksByCriterion'] as Record<string, unknown> | undefined;
+    const apiOverallComments = assignment['overallComments'] as string | undefined;
+    const apiStarRemarks = assignment['starRemarks'] as any;
 
     if (apiRatings && Object.keys(apiRatings).length > 0) {
       setCriterionDetails(
         mapStoredSubmissionToDetails(apiRatings as Record<string, any>, apiStarRemarksByCriterion as Record<string, any> ?? {})
       );
+      setOverallComments(apiOverallComments ?? '');
+      setStarRemarks(apiStarRemarks ?? null);
       return;
     }
 
@@ -141,8 +147,12 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
     const stored = loadFeedbackSubmission(assignmentId);
     if (stored?.ratings && Object.keys(stored.ratings).length > 0) {
       setCriterionDetails(mapStoredSubmissionToDetails(stored.ratings, stored.starRemarksByCriterion));
+      setOverallComments(stored.overallComments ?? '');
+      setStarRemarks(stored.starRemarks ?? null);
     } else {
       setCriterionDetails(getDefaultSubmittedFeedback());
+      setOverallComments('');
+      setStarRemarks(null);
     }
   }, [assignment, assignmentId]);
 
@@ -204,39 +214,132 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
           alignItems: 'start',
         }}
       >
-        <Card
-          elevation={0}
-          sx={{
-            minWidth: 0,
-            p: 3,
-            borderRadius: '16px',
-            bgcolor: 'background.paper',
-            border: '1px solid',
-            borderColor: 'divider',
-            boxShadow: (theme) => theme.vars.customShadows.z1,
-          }}
-        >
-          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2.5, color: 'text.primary' }}>
-            Performance Criteria
-          </Typography>
+        <Stack spacing={3}>
+          <Card
+            elevation={0}
+            sx={{
+              minWidth: 0,
+              p: 3,
+              borderRadius: '16px',
+              bgcolor: 'background.paper',
+              border: '1px solid',
+              borderColor: 'divider',
+              boxShadow: (theme) => theme.vars.customShadows.z1,
+            }}
+          >
+            <Typography variant="h6" sx={{ fontWeight: 700, mb: 2.5, color: 'text.primary' }}>
+              Performance Criteria
+            </Typography>
 
-          <Stack spacing={2}>
-            {criterionDetails.map((detail) => {
-              const criterion = criteriaById[detail.criterionId];
-              if (!criterion) return null;
+            <Stack spacing={2}>
+              {criterionDetails.map((detail) => {
+                const criterion = criteriaById[detail.criterionId];
+                if (!criterion) return null;
 
-              return (
-                <FeedbackDetailsCriterionCard
-                  key={detail.criterionId}
-                  criterion={criterion}
-                  rating={detail.rating}
-                  starRemarks={detail.starRemarks}
-                  defaultExpanded={detail.defaultExpanded}
-                />
-              );
-            })}
-          </Stack>
-        </Card>
+                return (
+                  <FeedbackDetailsCriterionCard
+                    key={detail.criterionId}
+                    criterion={criterion}
+                    rating={detail.rating}
+                    starRemarks={detail.starRemarks}
+                    defaultExpanded={detail.defaultExpanded}
+                  />
+                );
+              })}
+            </Stack>
+          </Card>
+
+          {starRemarks && (starRemarks.situation || starRemarks.task || starRemarks.action || starRemarks.result) && (
+            <Card
+              elevation={0}
+              sx={{
+                minWidth: 0,
+                p: 3,
+                borderRadius: '16px',
+                bgcolor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider',
+                boxShadow: (theme) => theme.vars.customShadows.z1,
+              }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: 700, mb: 2.5, color: 'text.primary' }}>
+                STAR Method - Overall Comments
+              </Typography>
+              <Stack spacing={2}>
+                {starRemarks.situation && (
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: 'text.primary' }}>
+                      Situation
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      {starRemarks.situation}
+                    </Typography>
+                  </Box>
+                )}
+                {starRemarks.task && (
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: 'text.primary' }}>
+                      Task
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      {starRemarks.task}
+                    </Typography>
+                  </Box>
+                )}
+                {starRemarks.action && (
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: 'text.primary' }}>
+                      Action
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      {starRemarks.action}
+                    </Typography>
+                  </Box>
+                )}
+                {starRemarks.result && (
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: 'text.primary' }}>
+                      Result
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      {starRemarks.result}
+                    </Typography>
+                  </Box>
+                )}
+              </Stack>
+            </Card>
+          )}
+
+          {overallComments && (
+            <Card
+              elevation={0}
+              sx={{
+                minWidth: 0,
+                p: 3,
+                borderRadius: '16px',
+                bgcolor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider',
+                boxShadow: (theme) => theme.vars.customShadows.z1,
+              }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: 700, mb: 2.5, color: 'text.primary' }}>
+                Overall Comments
+              </Typography>
+              <Box
+                sx={{
+                  p: 2,
+                  borderRadius: 1,
+                  bgcolor: 'background.neutral',
+                }}
+              >
+                <Typography variant="body2" sx={{ color: 'text.secondary', whiteSpace: 'pre-wrap' }}>
+                  {overallComments}
+                </Typography>
+              </Box>
+            </Card>
+          )}
+        </Stack>
 
         <Box
           sx={{
