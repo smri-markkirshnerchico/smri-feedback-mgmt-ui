@@ -118,6 +118,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
       const res = await axios.get<FeedbackRequestDto[]>(url);
       return res.data.map((f) => {
         const id = f.FeedbackId || simpleHash([f.Category, f.Year, f.CreatedAt].join('|'));
+        const submittedCount = (f as any).SubmittedCount || 0;
         return {
           id,
           employeeName: 'You',
@@ -126,7 +127,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
           dateInitiated: f.CreatedAt,
           status: (f.Status === 'approved' ? 'in-progress' : f.Status === 'rejected' ? 'rejected' : 'for-your-approval') as any,
           statusLabel: f.Status === 'approved' ? 'Approved' : f.Status === 'rejected' ? 'List Rejected' : 'Submitted',
-          completion: `0/${f.Providers.length}`,
+          completion: `${submittedCount}/${f.Providers.length}`,
           reviewerAvatarUrls: f.Providers.map((p) => p.Name),
           avgScore: null,
           feedbackRequest: f,
