@@ -2,6 +2,16 @@ import type { IReviewFeedbackItem } from 'src/types/review-feedback';
 
 // ----------------------------------------------------------------------
 
+function simpleHash(str: string): string {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  return `hash-${Math.abs(hash).toString(36)}`;
+}
+
 export function readField(record: Record<string, unknown>, ...keys: string[]): string {
   for (const key of keys) {
     const value = record[key];
@@ -28,10 +38,16 @@ export function mapFeedbackAssignmentToRow(
   const status = isSubmitted ? 'completed' : 'in-progress';
   const statusLabel = isSubmitted ? 'Feedback Submitted' : 'Pending';
 
+  const assignmentId = readField(assignment, 'AssignmentId', 'assignmentId');
+  const id = assignmentId ||
+    simpleHash([
+      readField(assignment, 'EmployeeToReviewName', 'employeeToReviewName'),
+      readField(assignment, 'Category', 'category'),
+      readField(assignment, 'CreatedAt', 'createdAt'),
+    ].join('|'));
+
   return {
-    id:
-      readField(assignment, 'AssignmentId', 'assignmentId') ||
-      `assignment-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+    id,
     employeeName: readField(assignment, 'EmployeeToReviewName', 'employeeToReviewName') || 'Unknown',
     employeeAvatarUrl: undefined,
     category: [category, year].filter(Boolean).join(' ') || '—',

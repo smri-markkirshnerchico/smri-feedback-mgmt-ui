@@ -2,7 +2,7 @@
 
 import { EMPTY_STAR_REMARKS, type FeedbackRating, type StarRemarks } from 'src/types/provide-feedback';
 
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
 
@@ -56,6 +56,11 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
       );
     }
   );
+
+  // Fetch data immediately on mount
+  useEffect(() => {
+    mutateAssignments();
+  }, [mutateAssignments]);
 
   const assignment = useMemo(
     () =>

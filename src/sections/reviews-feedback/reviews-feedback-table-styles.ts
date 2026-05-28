@@ -12,7 +12,7 @@ type ReviewsFeedbackTableRowSxOptions = {
 export function reviewsFeedbackTableRowSx(
   theme: Theme,
   options?: ReviewsFeedbackTableRowSxOptions
-): SxProps<Theme> {
+): Record<string, any> {
   const borderColor = theme.vars.palette.divider;
 
   return {

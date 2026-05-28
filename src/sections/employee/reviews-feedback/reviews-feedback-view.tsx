@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useCallback, lazy, Suspense } from 'react';
+import { useMemo, useState, useCallback, lazy, Suspense, useEffect } from 'react';
 import useSWR from 'swr';
 
 const StartFeedbackModal = lazy(() =>
@@ -31,6 +31,16 @@ import { Scrollbar } from 'src/components/scrollbar';
 import { TableNoData, TableHeadCustom, type TableHeadCellProps } from 'src/components/table';
 
 import { mapFeedbackAssignments } from 'src/sections/reviews-feedback/map-feedback-assignment';
+
+function simpleHash(str: string): string {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  return `hash-${Math.abs(hash).toString(36)}`;
+}
 import { withReviewsFeedbackTableHeadSx } from 'src/sections/reviews-feedback/reviews-feedback-table-styles';
 
 import { TAB_COUNTS, getReviewFeedbackByTab } from './mock-data';
@@ -90,7 +100,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
 
-  const { data: needsMyReviewFeedback = [] } = useSWR(
+  const { data: needsMyReviewFeedback = [], mutate: mutateNeeds } = useSWR(
     endpoints.application.feedbackAssignment.root,
     async (url) => {
       const res = await axios.get<unknown[]>(url);
@@ -99,25 +109,34 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
     { revalidateOnFocus: true, revalidateOnReconnect: true }
   );
 
-  const { data: myFeedbackData = [], isLoading: myFeedbackLoading } = useSWR(
+  const { data: myFeedbackData = [], isLoading: myFeedbackLoading, mutate: mutateFeedback } = useSWR(
     `${endpoints.application.feedback.root}/my-feedback`,
     async (url) => {
       const res = await axios.get<FeedbackRequestDto[]>(url);
-      return res.data.map((f) => ({
-        id: f.FeedbackId,
-        employeeName: 'You',
-        employeeAvatarUrl: undefined,
-        category: `${f.Category} ${f.Year}`,
-        dateInitiated: f.CreatedAt,
-        status: (f.Status === 'approved' ? 'in-progress' : f.Status === 'rejected' ? 'rejected' : 'for-your-approval') as any,
-        statusLabel: f.Status === 'approved' ? 'Approved' : f.Status === 'rejected' ? 'List Rejected' : 'Submitted',
-        completion: `0/${f.Providers.length}`,
-        reviewerAvatarUrls: f.Providers.map((p) => p.Name),
-        avgScore: null,
-        feedbackRequest: f,
-      }));
+      return res.data.map((f) => {
+        const id = f.FeedbackId || simpleHash([f.Category, f.Year, f.CreatedAt].join('|'));
+        return {
+          id,
+          employeeName: 'You',
+          employeeAvatarUrl: undefined,
+          category: `${f.Category} ${f.Year}`,
+          dateInitiated: f.CreatedAt,
+          status: (f.Status === 'approved' ? 'in-progress' : f.Status === 'rejected' ? 'rejected' : 'for-your-approval') as any,
+          statusLabel: f.Status === 'approved' ? 'Approved' : f.Status === 'rejected' ? 'List Rejected' : 'Submitted',
+          completion: `0/${f.Providers.length}`,
+          reviewerAvatarUrls: f.Providers.map((p) => p.Name),
+          avgScore: null,
+          feedbackRequest: f,
+        };
+      });
     }
   );
+
+  // Refetch data when tab changes
+  useEffect(() => {
+    mutateNeeds();
+    mutateFeedback();
+  }, [currentTab, mutateNeeds, mutateFeedback]);
 
   const tableData = useMemo(() => {
     if (currentTab === 'my-feedback') {
@@ -275,9 +294,9 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
               />
 
               <TableBody>
-                {dataFiltered.map((row) => (
+                {dataFiltered.filter(row => row.id).map((row) => (
                   <ReviewsFeedbackTableRow
-                    key={row.id}
+                    key={row.id || ''}
                     row={row}
                     showStartFeedbackButton={currentTab === 'needs-my-review'}
                     onStartFeedback={
@@ -293,7 +312,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
                   />
                 ))}
 
-                <TableNoData notFound={!dataFiltered.length} />
+                <TableNoData notFound={!dataFiltered.filter(row => row.id).length} />
               </TableBody>
             </Table>
           </Scrollbar>
