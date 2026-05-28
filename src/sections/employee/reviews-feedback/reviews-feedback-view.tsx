@@ -297,7 +297,7 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
               />
 
               <TableBody>
-                {(needsValidating || myFeedbackValidating) && tableData.length === 0 ? (
+                {(needsValidating || myFeedbackValidating) ? (
                   Array.from({ length: 5 }).map((_, idx) => (
                     <TableRow key={idx} sx={{ bgcolor: 'background.paper', boxShadow: (theme) => theme.vars.customShadows.z1 }}>
                       {Array.from({ length: currentTab === 'needs-my-review' ? 5 : 7 }).map((__, cellIdx) => (
