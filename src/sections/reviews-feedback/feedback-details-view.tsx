@@ -11,6 +11,7 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
 import axios from 'src/lib/axios';
@@ -591,23 +592,25 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
                       >
                         {employeeInitial}
                       </Avatar>
-                      <Typography
-                        variant="subtitle2"
-                        sx={{
-                          fontWeight: isActive ? 700 : 600,
-                          color: isActive ? 'text.primary' : 'text.secondary',
-                          fontSize: 13,
-                          lineHeight: 1.2,
-                          display: '-webkit-box',
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          wordBreak: 'break-word',
-                        }}
-                      >
-                        {p.Name}
-                      </Typography>
+                      <Tooltip title={p.Name} arrow>
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            fontWeight: isActive ? 700 : 600,
+                            color: isActive ? 'text.primary' : 'text.secondary',
+                            fontSize: 13,
+                            lineHeight: 1.2,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            wordBreak: 'break-word',
+                          }}
+                        >
+                          {p.Name}
+                        </Typography>
+                      </Tooltip>
                     </Box>
                   );
                 })}
