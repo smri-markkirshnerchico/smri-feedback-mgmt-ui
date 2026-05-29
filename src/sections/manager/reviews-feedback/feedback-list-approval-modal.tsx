@@ -41,6 +41,20 @@ const SlideUp = forwardRef(function SlideUp(
 
 // ----------------------------------------------------------------------
 
+const avatarUrlForReviewer = (name: string, index: number) => {
+  let avatarIndex = (index % 10) + 2;
+  const normName = (name || '').toLowerCase();
+  if (normName.includes('wiggins') || normName.includes('chico') || normName.includes('mark')) avatarIndex = 12;
+  else if (normName.includes('adrew') || normName.includes('andrew') || normName.includes('kyle') || normName.includes('manuyag')) avatarIndex = 3;
+  else if (normName.includes('joy') || normName.includes('shane') || normName.includes('marayag')) avatarIndex = 4;
+  else if (normName.includes('remin') || normName.includes('tan') || normName.includes('ian') || normName.includes('mojica')) avatarIndex = 5;
+  else if (normName.includes('aloisa') || normName.includes('ng') || normName.includes('kyla') || normName.includes('pantino')) avatarIndex = 6;
+  
+  return `/assets/images/mock/avatar/avatar-${avatarIndex}.webp`;
+};
+
+// ----------------------------------------------------------------------
+
 interface FeedbackRequestDto {
   FeedbackId: string;
   Providers: Array<{ UserId: string; Name: string; Position: string; ProjectName?: string; Reason: string }>;
@@ -74,6 +88,11 @@ export function FeedbackListApprovalModal({
   const [providerComments, setProviderComments] = useState<Record<string, string>>({});
   const [approving, setApproving] = useState(false);
   const [rejecting, setRejecting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const handleOpenConfirm = () => {
+    setConfirmOpen(true);
+  };
 
   const activeProvider = providers.find((p) => p.id === activeProviderId);
 
@@ -113,6 +132,7 @@ export function FeedbackListApprovalModal({
       await axios.patch(endpoints.application.feedback.approve(feedbackId));
       onApprove?.();
       onApproveSuccess?.();
+      setConfirmOpen(false);
     } catch (error) {
       console.error('Approve failed:', error);
     } finally {
@@ -146,12 +166,15 @@ export function FeedbackListApprovalModal({
     ? feedbackRequest.Providers.map((p, idx) => ({
         id: String(idx + 1),
         employeeName: p.Name,
-        employeeAvatarUrl: undefined,
+        employeeAvatarUrl: avatarUrlForReviewer(p.Name, idx),
         position: p.Position,
         projectName: p.ProjectName || '',
         reason: p.Reason,
       }))
-    : providers;
+    : providers.map((p, idx) => ({
+        ...p,
+        employeeAvatarUrl: p.employeeAvatarUrl || avatarUrlForReviewer(p.employeeName, idx),
+      }));
 
   return (
     <Dialog
@@ -240,7 +263,7 @@ export function FeedbackListApprovalModal({
           </LoadingButton>
 
           <LoadingButton
-            onClick={handleApprove}
+            onClick={handleOpenConfirm}
             loading={approving}
             variant="contained"
             startIcon={<Iconify icon="eva:checkmark-circle-2-fill" width={20} />}
@@ -550,6 +573,208 @@ export function FeedbackListApprovalModal({
         onSave={handleSaveComment}
         onRemove={handleRemoveComment}
       />
+
+      <Dialog
+        open={confirmOpen}
+        onClose={() => !approving && setConfirmOpen(false)}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{
+          sx: {
+            p: 3,
+            borderRadius: '20px',
+            bgcolor: 'background.paper',
+          },
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 700,
+            color: 'text.primary',
+            mb: 3,
+            fontSize: '18px',
+            fontFamily: 'Henry Sans',
+          }}
+        >
+          Approve Feedback
+        </Typography>
+
+        <Stack alignItems="center" spacing={2} sx={{ mb: 4 }}>
+          <Iconify
+            icon="solar:plain-2-bold"
+            width={72}
+            height={72}
+            sx={{ color: 'success.main' }}
+          />
+
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 800,
+              color: 'text.primary',
+              textAlign: 'center',
+              fontSize: '20px',
+              fontFamily: 'Henry Sans',
+            }}
+          >
+            Submit this Feedback Request?
+          </Typography>
+
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+              textAlign: 'center',
+              fontSize: '14px',
+              maxWidth: 320,
+            }}
+          >
+            All list on the feedback provider will be notified once submitted
+          </Typography>
+        </Stack>
+
+        <Card
+          variant="outlined"
+          sx={{
+            p: 2.5,
+            mb: 4,
+            borderRadius: '16px',
+            borderColor: 'divider',
+            boxShadow: 'none',
+            bgcolor: 'background.paper',
+          }}
+        >
+          {/* Employee to be Reviewed Header */}
+          <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
+            <Avatar
+              src={item.employeeAvatarUrl}
+              alt={item.employeeName}
+              sx={{ width: 48, height: 48 }}
+            >
+              {item.employeeName.charAt(0)}
+            </Avatar>
+            <Stack spacing={0.25}>
+              <Typography
+                variant="caption"
+                sx={{ color: 'text.secondary', fontSize: '13px' }}
+              >
+                Employee to be Reviewed
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                sx={{ fontWeight: 700, color: 'text.primary', fontSize: '15px' }}
+              >
+                {item.employeeName}
+              </Typography>
+            </Stack>
+          </Stack>
+
+          <Box sx={{ borderBottom: '1px solid', borderColor: 'divider', mb: 2 }} />
+
+          {/* Feedback Providers */}
+          <Typography
+            variant="caption"
+            sx={{
+              color: 'text.secondary',
+              fontWeight: 600,
+              display: 'block',
+              mb: 1.5,
+              fontSize: '13px',
+            }}
+          >
+            Feedback Providers ({displayProviders.length})
+          </Typography>
+
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: 2,
+            }}
+          >
+            {displayProviders.map((provider) => (
+              <Stack
+                key={provider.id}
+                direction="row"
+                alignItems="center"
+                spacing={1.25}
+              >
+                <Avatar
+                  src={provider.employeeAvatarUrl}
+                  alt={provider.employeeName}
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    fontSize: '13px',
+                    fontWeight: 600,
+                  }}
+                >
+                  {provider.employeeName.charAt(0)}
+                </Avatar>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 600,
+                    color: 'text.primary',
+                    fontSize: '13px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {provider.employeeName}
+                </Typography>
+              </Stack>
+            ))}
+          </Box>
+        </Card>
+
+        {/* Action Buttons */}
+        <Stack direction="row" spacing={1.5} justifyContent="flex-end">
+          <Button
+            variant="outlined"
+            onClick={() => setConfirmOpen(false)}
+            disabled={approving}
+            sx={{
+              height: 40,
+              px: 3,
+              fontWeight: 700,
+              fontSize: '14px',
+              textTransform: 'none',
+              borderRadius: '10px',
+              borderColor: 'divider',
+              color: 'text.primary',
+              '&:hover': {
+                bgcolor: 'action.hover',
+              },
+            }}
+          >
+            Cancel
+          </Button>
+
+          <LoadingButton
+            variant="contained"
+            onClick={handleApprove}
+            loading={approving}
+            sx={{
+              height: 40,
+              px: 3,
+              fontWeight: 700,
+              fontSize: '14px',
+              textTransform: 'none',
+              borderRadius: '10px',
+              bgcolor: 'primary.main',
+              color: 'white',
+              '&:hover': {
+                bgcolor: 'primary.dark',
+              },
+            }}
+          >
+            Proceed
+          </LoadingButton>
+        </Stack>
+      </Dialog>
     </Dialog>
   );
 }
