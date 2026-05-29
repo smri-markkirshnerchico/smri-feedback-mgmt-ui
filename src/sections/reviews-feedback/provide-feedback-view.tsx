@@ -139,9 +139,9 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
 
       saveFeedbackSubmission(assignmentId, {
         ratings: ratings as Record<string, FeedbackRating>,
-        starRemarksByCriterion: allRatedAsME ? undefined : starRemarksByCriterion,
-        overallComments: allRatedAsME ? undefined : overallComments,
-        starRemarks: allRatedAsME ? starRemarks : undefined,
+        starRemarksByCriterion: allRatedAsME ? {} : starRemarksByCriterion,
+        overallComments: allRatedAsME ? '' : overallComments,
+        starRemarks: allRatedAsME ? starRemarks : EMPTY_STAR_REMARKS,
       });
 
       // Refetch assignments to update all devices
