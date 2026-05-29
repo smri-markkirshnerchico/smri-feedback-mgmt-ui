@@ -478,7 +478,7 @@ export function StartFeedbackModal({ open, onClose }: Props) {
       <Dialog
         open={confirmOpen}
         onClose={() => !submitting && setConfirmOpen(false)}
-        maxWidth="xs"
+        maxWidth="sm"
         fullWidth
         PaperProps={{
           sx: {

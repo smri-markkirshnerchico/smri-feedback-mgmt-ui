@@ -579,7 +579,7 @@ export function FeedbackListApprovalModal({
       <Dialog
         open={confirmOpen}
         onClose={() => !approving && setConfirmOpen(false)}
-        maxWidth="xs"
+        maxWidth="sm"
         fullWidth
         PaperProps={{
           sx: {
