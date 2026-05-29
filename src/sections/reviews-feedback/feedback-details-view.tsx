@@ -236,41 +236,67 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
         }}
       >
         <Stack spacing={3}>
-          <Card
-            elevation={0}
-            sx={{
-              minWidth: 0,
-              p: 3,
-              borderRadius: '16px',
-              bgcolor: 'background.paper',
-              border: '1px solid',
-              borderColor: 'divider',
-              boxShadow: (theme) => theme.vars.customShadows.z1,
-            }}
-          >
-            <Typography variant="h6" sx={{ fontWeight: 700, mb: 2.5, color: 'text.primary' }}>
-              Performance Criteria
-            </Typography>
+          {isValidating ? (
+            <Card
+              elevation={0}
+              sx={{
+                minWidth: 0,
+                p: 3,
+                borderRadius: '16px',
+                bgcolor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider',
+                boxShadow: (theme) => theme.vars.customShadows.z1,
+              }}
+            >
+              <Skeleton variant="text" height={32} width="40%" sx={{ mb: 2.5 }} />
+              <Stack spacing={2}>
+                {Array.from({ length: 5 }).map((_, idx) => (
+                  <Box key={idx} sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+                    <Skeleton variant="text" height={24} width="30%" sx={{ mb: 1 }} />
+                    <Skeleton variant="text" height={20} />
+                    <Skeleton variant="text" height={20} width="80%" />
+                  </Box>
+                ))}
+              </Stack>
+            </Card>
+          ) : (
+            <Card
+              elevation={0}
+              sx={{
+                minWidth: 0,
+                p: 3,
+                borderRadius: '16px',
+                bgcolor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider',
+                boxShadow: (theme) => theme.vars.customShadows.z1,
+              }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: 700, mb: 2.5, color: 'text.primary' }}>
+                Performance Criteria
+              </Typography>
 
-            <Stack spacing={2}>
-              {criterionDetails.map((detail) => {
-                const criterion = criteriaById[detail.criterionId];
-                if (!criterion) return null;
+              <Stack spacing={2}>
+                {criterionDetails.map((detail) => {
+                  const criterion = criteriaById[detail.criterionId];
+                  if (!criterion) return null;
 
-                return (
-                  <FeedbackDetailsCriterionCard
-                    key={detail.criterionId}
-                    criterion={criterion}
-                    rating={detail.rating}
-                    starRemarks={detail.starRemarks}
-                    defaultExpanded={detail.defaultExpanded}
-                  />
-                );
-              })}
-            </Stack>
-          </Card>
+                  return (
+                    <FeedbackDetailsCriterionCard
+                      key={detail.criterionId}
+                      criterion={criterion}
+                      rating={detail.rating}
+                      starRemarks={detail.starRemarks}
+                      defaultExpanded={detail.defaultExpanded}
+                    />
+                  );
+                })}
+              </Stack>
+            </Card>
+          )}
 
-          {starRemarks && (starRemarks.situation || starRemarks.task || starRemarks.action || starRemarks.result) && (
+          {!isValidating && starRemarks && (starRemarks.situation || starRemarks.task || starRemarks.action || starRemarks.result) && (
             <Card
               elevation={0}
               sx={{
@@ -331,7 +357,7 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
             </Card>
           )}
 
-          {overallComments && (
+          {!isValidating && overallComments && (
             <Card
               elevation={0}
               sx={{
