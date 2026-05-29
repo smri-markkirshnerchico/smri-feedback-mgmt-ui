@@ -56,7 +56,6 @@ function parseAssignmentId(searchParams: URLSearchParams) {
   return raw.split('?')[0].split('&')[0].trim();
 }
 
-/tmp/smri-feedback-mgmt-ui/src/sections/reviews-feedback/feedback-details-view.tsx
 function emailFromName(name: string) {
   const slug = name.toLowerCase().replace(/\s+/g, '');
   return `${slug}@smretail.com`;
