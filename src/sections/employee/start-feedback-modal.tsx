@@ -4,6 +4,7 @@ import { forwardRef, useState, useMemo } from 'react';
 import useSWR from 'swr';
 
 import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
 import Dialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
 import IconButton from '@mui/material/IconButton';
@@ -474,84 +475,212 @@ export function StartFeedbackModal({ open, onClose }: Props) {
       </Box>
 
       {/* Confirmation Modal */}
-      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 2 } }}>
-        <Box sx={{ p: 3 }}>
-          {/* Title */}
-          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-            Submit for Approval
+      <Dialog
+        open={confirmOpen}
+        onClose={() => !submitting && setConfirmOpen(false)}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{
+          sx: {
+            p: 3,
+            borderRadius: '20px',
+            bgcolor: 'background.paper',
+          },
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 700,
+            color: 'text.primary',
+            mb: 3,
+            fontSize: '18px',
+            fontFamily: 'Henry Sans',
+          }}
+        >
+          Submit for Approval
+        </Typography>
+
+        <Stack alignItems="center" spacing={2} sx={{ mb: 4 }}>
+          <Iconify
+            icon="solar:letter-send-bold"
+            width={72}
+            height={72}
+            sx={{ color: 'success.main' }}
+          />
+
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 800,
+              color: 'text.primary',
+              textAlign: 'center',
+              fontSize: '20px',
+              fontFamily: 'Henry Sans',
+            }}
+          >
+            Submit this list for approval?
           </Typography>
 
-          <Divider sx={{ mb: 4 }} />
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+              textAlign: 'center',
+              fontSize: '14px',
+              maxWidth: 320,
+            }}
+          >
+            Once submitted, the approver will be notified to review and validate the selected feedback providers.
+          </Typography>
+        </Stack>
 
-          {/* Center Section */}
-          <Stack alignItems="center" gap={3} sx={{ mb: 4, textAlign: 'center' }}>
-            {/* Icon */}
-            <Iconify icon="mdi:email-send" sx={{ fontSize: 80, color: 'success.main' }} />
-
-            {/* Question */}
-            <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '20px' }}>
-              Submit this list for approval?
-            </Typography>
-
-            {/* Description */}
-            <Typography variant="body2" sx={{ color: 'text.secondary', maxWidth: 400 }}>
-              Once submitted, the approver will be notified to review and validate the selected feedback providers.
-            </Typography>
-          </Stack>
-
-          {/* Approver Section */}
-          <Stack sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1, mb: 2 }}>
-            <Stack direction="row" alignItems="flex-start" gap={2}>
-              <Avatar sx={{ width: 56, height: 56, mt: 0.5 }} />
-              <Stack gap={0.5}>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-                  Approver
-                </Typography>
-                <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                  Janicca Juniller
-                </Typography>
-              </Stack>
+        {/* Approver Section Card */}
+        <Card
+          variant="outlined"
+          sx={{
+            p: 2.5,
+            mb: 2,
+            borderRadius: '16px',
+            borderColor: 'divider',
+            boxShadow: 'none',
+            bgcolor: 'background.paper',
+          }}
+        >
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Avatar sx={{ width: 48, height: 48, bgcolor: 'background.neutral', color: 'text.secondary' }}>
+              J
+            </Avatar>
+            <Stack spacing={0.25}>
+              <Typography
+                variant="caption"
+                sx={{ color: 'text.secondary', fontSize: '13px' }}
+              >
+                Approver
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                sx={{ fontWeight: 700, color: 'text.primary', fontSize: '15px' }}
+              >
+                Janicca Juniller
+              </Typography>
             </Stack>
           </Stack>
+        </Card>
 
-          {/* Feedback Providers */}
-          <Stack sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1, mb: 4 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.disabled', mb: 2 }}>
-              Feedback Providers ({selectedProviders.length})
-            </Typography>
-            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
-              {selectedProviders.map((provider, idx) => (
-                <Stack key={idx} direction="row" alignItems="center" gap={1.5}>
-                  <Avatar sx={{ width: 44, height: 44, fontSize: 14, fontWeight: 600, bgcolor: 'background.neutral', color: 'text.secondary' }}>
-                    {provider?.name?.charAt(0).toUpperCase()}
-                  </Avatar>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    {provider?.name}
-                  </Typography>
-                </Stack>
-              ))}
-            </Box>
-          </Stack>
+        {/* Feedback Providers Card */}
+        <Card
+          variant="outlined"
+          sx={{
+            p: 2.5,
+            mb: 4,
+            borderRadius: '16px',
+            borderColor: 'divider',
+            boxShadow: 'none',
+            bgcolor: 'background.paper',
+          }}
+        >
+          <Typography
+            variant="caption"
+            sx={{
+              color: 'text.secondary',
+              fontWeight: 600,
+              display: 'block',
+              mb: 1.5,
+              fontSize: '13px',
+            }}
+          >
+            Feedback Providers ({selectedProviders.length})
+          </Typography>
 
-          {/* Buttons */}
-          <Stack direction="row" gap={2} justifyContent="flex-end">
-            <Button
-              variant="outlined"
-              onClick={() => setConfirmOpen(false)}
-              sx={{ borderRadius: 1, px: 3, fontWeight: 600 }}
-            >
-              Cancel
-            </Button>
-            <LoadingButton
-              variant="contained"
-              loading={submitting}
-              onClick={handleSubmit}
-              sx={{ borderRadius: 1, px: 4, fontWeight: 600, bgcolor: 'primary.main', color: 'primary.contrastText', '&:hover': { bgcolor: 'primary.dark' } }}
-            >
-              Proceed
-            </LoadingButton>
-          </Stack>
-        </Box>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: 2,
+            }}
+          >
+            {selectedProviders.map((provider, idx) => (
+              <Stack
+                key={idx}
+                direction="row"
+                alignItems="center"
+                spacing={1.25}
+              >
+                <Avatar
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    bgcolor: 'background.neutral',
+                    color: 'text.secondary',
+                  }}
+                >
+                  {provider?.name?.charAt(0).toUpperCase()}
+                </Avatar>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 600,
+                    color: 'text.primary',
+                    fontSize: '13px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {provider?.name}
+                </Typography>
+              </Stack>
+            ))}
+          </Box>
+        </Card>
+
+        {/* Action Buttons */}
+        <Stack direction="row" spacing={1.5} justifyContent="flex-end">
+          <Button
+            variant="outlined"
+            onClick={() => setConfirmOpen(false)}
+            disabled={submitting}
+            sx={{
+              height: 40,
+              px: 3,
+              fontWeight: 700,
+              fontSize: '14px',
+              textTransform: 'none',
+              borderRadius: '10px',
+              borderColor: 'divider',
+              color: 'text.primary',
+              '&:hover': {
+                bgcolor: 'action.hover',
+              },
+            }}
+          >
+            Cancel
+          </Button>
+
+          <LoadingButton
+            variant="contained"
+            onClick={handleSubmit}
+            loading={submitting}
+            sx={{
+              height: 40,
+              px: 3,
+              fontWeight: 700,
+              fontSize: '14px',
+              textTransform: 'none',
+              borderRadius: '10px',
+              bgcolor: 'primary.main',
+              color: 'white',
+              '&:hover': {
+                bgcolor: 'primary.dark',
+              },
+            }}
+          >
+            Proceed
+          </LoadingButton>
+        </Stack>
       </Dialog>
     </Dialog>
   );
