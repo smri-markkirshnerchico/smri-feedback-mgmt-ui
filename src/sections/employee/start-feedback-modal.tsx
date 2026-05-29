@@ -492,7 +492,7 @@ export function StartFeedbackModal({ open, onClose }: Props) {
           variant="h6"
           sx={{
             fontWeight: 700,
-            color: 'text.primary',
+            color: '#1C252E',
             mb: 3,
             fontSize: '18px',
             fontFamily: 'Henry Sans',
@@ -512,8 +512,8 @@ export function StartFeedbackModal({ open, onClose }: Props) {
           <Typography
             variant="h6"
             sx={{
-              fontWeight: 800,
-              color: 'text.primary',
+              fontWeight: 700,
+              color: '#1C252E',
               textAlign: 'center',
               fontSize: '20px',
               fontFamily: 'Henry Sans',
@@ -525,10 +525,11 @@ export function StartFeedbackModal({ open, onClose }: Props) {
           <Typography
             variant="body2"
             sx={{
-              color: 'text.secondary',
+              color: '#637381',
               textAlign: 'center',
               fontSize: '14px',
               maxWidth: 320,
+              lineHeight: 1.5,
             }}
           >
             Once submitted, the approver will be notified to review and validate the selected feedback providers.
@@ -555,13 +556,13 @@ export function StartFeedbackModal({ open, onClose }: Props) {
             <Stack spacing={0.25}>
               <Typography
                 variant="caption"
-                sx={{ color: 'text.secondary', fontSize: '13px' }}
+                sx={{ color: '#7F8C9D', fontSize: '13px', fontWeight: 500 }}
               >
                 Approver
               </Typography>
               <Typography
                 variant="subtitle1"
-                sx={{ fontWeight: 700, color: 'text.primary', fontSize: '15px' }}
+                sx={{ fontWeight: 700, color: '#1C252E', fontSize: '14px' }}
               >
                 Janicca Juniller
               </Typography>
@@ -574,8 +575,8 @@ export function StartFeedbackModal({ open, onClose }: Props) {
           <Typography
             variant="caption"
             sx={{
-              color: 'text.secondary',
-              fontWeight: 600,
+              color: '#7F8C9D',
+              fontWeight: 500,
               display: 'block',
               mb: 1.5,
               fontSize: '13px',
@@ -613,9 +614,9 @@ export function StartFeedbackModal({ open, onClose }: Props) {
                 <Typography
                   variant="body2"
                   sx={{
-                    fontWeight: 600,
-                    color: 'text.primary',
-                    fontSize: '13px',
+                    fontWeight: 500,
+                    color: '#1C252E',
+                    fontSize: '14px',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
