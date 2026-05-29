@@ -309,19 +309,19 @@ export function FeedbackListApprovalModal({
             <Card
               variant="outlined"
               sx={{
-                p: 1.5,
-                width: 340,
+                p: 2,
+                width: 380,
                 flexShrink: 0,
-                borderRadius: 1.5,
+                borderRadius: '16px',
                 borderColor: 'divider',
                 boxShadow: 'none',
               }}
             >
-              <Stack direction="row" alignItems="center" spacing={1.5}>
+              <Stack direction="row" alignItems="center" spacing={2}>
                 <Avatar
                   src={item.employeeAvatarUrl}
                   alt={item.employeeName}
-                  sx={{ width: 40, height: 40, flexShrink: 0 }}
+                  sx={{ width: 48, height: 48, flexShrink: 0 }}
                 >
                   {item.employeeName.charAt(0)}
                 </Avatar>
@@ -329,13 +329,13 @@ export function FeedbackListApprovalModal({
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                   <Typography
                     variant="caption"
-                    sx={{ color: 'text.secondary', display: 'block', lineHeight: 1.4 }}
+                    sx={{ color: 'text.secondary', display: 'block', lineHeight: 1.4, fontSize: '13px' }}
                   >
                     Employee to be Reviewed
                   </Typography>
                   <Typography
-                    variant="subtitle2"
-                    sx={{ fontWeight: 700, color: 'text.primary', lineHeight: 1.4 }}
+                    variant="subtitle1"
+                    sx={{ fontWeight: 700, color: 'text.primary', lineHeight: 1.4, fontSize: '15px' }}
                   >
                     {item.employeeName}
                   </Typography>
