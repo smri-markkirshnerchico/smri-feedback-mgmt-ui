@@ -480,7 +480,7 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
                 p: 1.5,
                 mb: 0,
                 borderRadius: '16px',
-                bgcolor: '#F4F6F8',
+                bgcolor: '#E5E8EB',
                 display: 'flex',
                 alignItems: 'center',
                 width: 1,
