@@ -151,7 +151,7 @@ export function EmployeeToBeReviewedCard({
               Status
             </Typography>
             <Box sx={{ display: 'flex' }}>
-              <Label variant="soft" color="success">
+              <Label variant="soft" color={status === 'Pending' ? 'warning' : 'success'}>
                 {status}
               </Label>
             </Box>

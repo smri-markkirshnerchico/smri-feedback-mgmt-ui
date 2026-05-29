@@ -331,22 +331,29 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
           }
         }
         
-        // Fallback to high-fidelity mock reviewer data
-        const mockFeedback = getReviewerMockFeedback(selectedReviewer);
-        setCriterionDetails(mockFeedback);
-        
-        const normName = selectedReviewer.toLowerCase();
-        if (normName.includes('wiggins') || normName.includes('chico') || normName.includes('mark')) {
-          setStarRemarks({
-            situation: 'During a recent project deadline, the team faced tight timelines and increased workload due to multiple overlapping tasks.',
-            task: 'The employee was responsible for ensuring timely completion of assigned deliverables while maintaining quality and coordinating with team members.',
-            action: 'He proactively organized their workload, communicated effectively with the team, and offered support to colleagues when needed. He also identified potential risks early and suggested practical solutions to avoid delays.',
-            result: 'Share the outcomes achieved, such as savings, efficiency gains, or lessons learned, ideally with quantifiable data.',
-          });
-          setOverallComments('');
+        // Fallback to high-fidelity mock reviewer data if the employee is Ryan Yatasa
+        if (employeeName === 'Ryan Yatasa') {
+          const mockFeedback = getReviewerMockFeedback(selectedReviewer);
+          setCriterionDetails(mockFeedback);
+          
+          const normName = selectedReviewer.toLowerCase();
+          if (normName.includes('wiggins') || normName.includes('chico') || normName.includes('mark')) {
+            setStarRemarks({
+              situation: 'During a recent project deadline, the team faced tight timelines and increased workload due to multiple overlapping tasks.',
+              task: 'The employee was responsible for ensuring timely completion of assigned deliverables while maintaining quality and coordinating with team members.',
+              action: 'He proactively organized their workload, communicated effectively with the team, and offered support to colleagues when needed. He also identified potential risks early and suggested practical solutions to avoid delays.',
+              result: 'Share the outcomes achieved, such as savings, efficiency gains, or lessons learned, ideally with quantifiable data.',
+            });
+            setOverallComments('');
+          } else {
+            setStarRemarks(null);
+            setOverallComments('');
+          }
         } else {
-          setStarRemarks(null);
+          // No feedback yet
+          setCriterionDetails([]);
           setOverallComments('');
+          setStarRemarks(null);
         }
       }
     } else {
@@ -403,6 +410,52 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
   const dateTimeInitiated = dateInitiated
     ? `${fDate(dateInitiated, 'DD MMM YYYY')} ${fTime(dateInitiated, 'h:mm A')}`
     : '09 Mar 2026 5:00 PM';
+
+  const isSelectedReviewerSubmitted = useMemo(() => {
+    if (!isMyFeedback) return true;
+    if (employeeName === 'Ryan Yatasa') return true;
+    if (!selectedReviewer) return false;
+    
+    const storageKey = `smri-feedback-submission-by-reviewer:${employeeName}:${selectedReviewer}`;
+    if (typeof window !== 'undefined') {
+      const storedRaw = sessionStorage.getItem(storageKey);
+      if (storedRaw) {
+        try {
+          const stored = JSON.parse(storedRaw);
+          if (stored?.ratings && Object.keys(stored.ratings).length > 0) {
+            return true;
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+    }
+    return false;
+  }, [isMyFeedback, employeeName, selectedReviewer]);
+
+  const submittedCount = useMemo(() => {
+    if (!isMyFeedback) return 0;
+    if (employeeName === 'Ryan Yatasa') return 5;
+    
+    let count = 0;
+    providers.forEach((p) => {
+      const storageKey = `smri-feedback-submission-by-reviewer:${employeeName}:${p.Name}`;
+      if (typeof window !== 'undefined') {
+        const storedRaw = sessionStorage.getItem(storageKey);
+        if (storedRaw) {
+          try {
+            const stored = JSON.parse(storedRaw);
+            if (stored?.ratings && Object.keys(stored.ratings).length > 0) {
+              count += 1;
+            }
+          } catch (e) {
+            // ignore
+          }
+        }
+      }
+    });
+    return count;
+  }, [isMyFeedback, employeeName, providers]);
 
   return (
     <MainContent maxWidth={false}>
@@ -602,22 +655,74 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
                 Performance Criteria
               </Typography>
 
-              <Stack spacing={2}>
-                {criterionDetails.map((detail) => {
-                  const criterion = criteriaById[detail.criterionId];
-                  if (!criterion) return null;
+              {!isSelectedReviewerSubmitted ? (
+                <Box
+                  sx={{
+                    mt: 1,
+                    p: 5,
+                    borderRadius: '16px',
+                    bgcolor: '#F4F6F8',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textAlign: 'center',
+                    minHeight: 380,
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={`${CONFIG.assetsDir}/assets/icons/empty/ic-chat-empty.svg`}
+                    alt="No reviews and feedback yet"
+                    sx={{
+                      width: 120,
+                      height: 120,
+                      mb: 2.5,
+                      opacity: 0.8,
+                    }}
+                  />
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 700,
+                      color: 'text.primary',
+                      mb: 1,
+                      fontSize: '16px',
+                      fontFamily: 'Henry Sans',
+                    }}
+                  >
+                    No Reviews & Feedback Yet
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                      fontSize: '14px',
+                      maxWidth: 420,
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    Please wait for the feedback provider to input their feedback
+                  </Typography>
+                </Box>
+              ) : (
+                <Stack spacing={2}>
+                  {criterionDetails.map((detail) => {
+                    const criterion = criteriaById[detail.criterionId];
+                    if (!criterion) return null;
 
-                  return (
-                    <FeedbackDetailsCriterionCard
-                      key={detail.criterionId}
-                      criterion={criterion}
-                      rating={detail.rating}
-                      starRemarks={detail.starRemarks}
-                      defaultExpanded={detail.defaultExpanded}
-                    />
-                  );
-                })}
-              </Stack>
+                    return (
+                      <FeedbackDetailsCriterionCard
+                        key={detail.criterionId}
+                        criterion={criterion}
+                        rating={detail.rating}
+                        starRemarks={detail.starRemarks}
+                        defaultExpanded={detail.defaultExpanded}
+                      />
+                    );
+                  })}
+                </Stack>
+              )}
             </Card>
           )}
 
@@ -787,9 +892,25 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
                 dateTimeInitiated={dateTimeInitiated}
                 category={category}
                 year={year}
-                status={isMyFeedback ? 'Completed' : undefined}
-                completion={isMyFeedback ? '5/5' : undefined}
-                completionDate={isMyFeedback ? '10 Mar 2026 7:00 PM' : undefined}
+                status={
+                  isMyFeedback
+                    ? submittedCount === 5
+                      ? 'Completed'
+                      : 'Pending'
+                    : undefined
+                }
+                completion={
+                  isMyFeedback
+                    ? `${submittedCount}/5`
+                    : undefined
+                }
+                completionDate={
+                  isMyFeedback
+                    ? submittedCount === 5
+                      ? '10 Mar 2026 7:00 PM'
+                      : '---'
+                    : undefined
+                }
               />
             )}
           </Card>
