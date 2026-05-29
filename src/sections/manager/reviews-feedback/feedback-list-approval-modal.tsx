@@ -94,7 +94,21 @@ export function FeedbackListApprovalModal({
     setConfirmOpen(true);
   };
 
-  const activeProvider = providers.find((p) => p.id === activeProviderId);
+  const displayProviders = feedbackRequest?.Providers
+    ? feedbackRequest.Providers.map((p, idx) => ({
+        id: String(idx + 1),
+        employeeName: p.Name,
+        employeeAvatarUrl: avatarUrlForReviewer(p.Name, idx),
+        position: p.Position,
+        projectName: p.ProjectName || '',
+        reason: p.Reason,
+      }))
+    : providers.map((p, idx) => ({
+        ...p,
+        employeeAvatarUrl: p.employeeAvatarUrl || avatarUrlForReviewer(p.employeeName, idx),
+      }));
+
+  const activeProvider = displayProviders.find((p) => p.id === activeProviderId);
 
   const handleOpenComment = useCallback((providerId: string) => {
     setActiveProviderId(providerId);
@@ -162,19 +176,7 @@ export function FeedbackListApprovalModal({
   const yearMatch = item.category.match(/\d{4}/);
   const year = yearMatch?.[0] ?? '2026';
 
-  const displayProviders = feedbackRequest?.Providers
-    ? feedbackRequest.Providers.map((p, idx) => ({
-        id: String(idx + 1),
-        employeeName: p.Name,
-        employeeAvatarUrl: avatarUrlForReviewer(p.Name, idx),
-        position: p.Position,
-        projectName: p.ProjectName || '',
-        reason: p.Reason,
-      }))
-    : providers.map((p, idx) => ({
-        ...p,
-        employeeAvatarUrl: p.employeeAvatarUrl || avatarUrlForReviewer(p.employeeName, idx),
-      }));
+
 
   return (
     <Dialog

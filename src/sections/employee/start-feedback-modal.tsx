@@ -535,19 +535,20 @@ export function StartFeedbackModal({ open, onClose }: Props) {
           </Typography>
         </Stack>
 
-        {/* Approver Section Card */}
+        {/* Approver and Providers Combined Card */}
         <Card
           variant="outlined"
           sx={{
             p: 2.5,
-            mb: 2,
+            mb: 4,
             borderRadius: '16px',
             borderColor: 'divider',
             boxShadow: 'none',
             bgcolor: 'background.paper',
           }}
         >
-          <Stack direction="row" alignItems="center" spacing={2}>
+          {/* Approver Section */}
+          <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
             <Avatar sx={{ width: 48, height: 48, bgcolor: 'background.neutral', color: 'text.secondary' }}>
               J
             </Avatar>
@@ -566,20 +567,10 @@ export function StartFeedbackModal({ open, onClose }: Props) {
               </Typography>
             </Stack>
           </Stack>
-        </Card>
 
-        {/* Feedback Providers Card */}
-        <Card
-          variant="outlined"
-          sx={{
-            p: 2.5,
-            mb: 4,
-            borderRadius: '16px',
-            borderColor: 'divider',
-            boxShadow: 'none',
-            bgcolor: 'background.paper',
-          }}
-        >
+          <Box sx={{ borderBottom: '1px solid', borderColor: 'divider', mb: 2 }} />
+
+          {/* Feedback Providers Section */}
           <Typography
             variant="caption"
             sx={{
