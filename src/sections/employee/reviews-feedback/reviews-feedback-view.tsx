@@ -314,6 +314,11 @@ export function ReviewsFeedbackView({ currentTab }: Readonly<Props>) {
                       <ReviewsFeedbackTableRow
                         key={row.id || ''}
                         row={row}
+                        onClick={
+                          currentTab === 'my-feedback'
+                            ? () => router.push(`${paths.main.employee.provideFeedback(row.id, { view: true })}&isMyFeedback=true`)
+                            : undefined
+                        }
                         showStartFeedbackButton={currentTab === 'needs-my-review'}
                         onStartFeedback={
                           currentTab === 'needs-my-review'

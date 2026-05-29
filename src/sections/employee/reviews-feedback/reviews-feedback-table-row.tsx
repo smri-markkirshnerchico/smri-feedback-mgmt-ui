@@ -18,6 +18,7 @@ import { reviewsFeedbackTableRowSx } from 'src/sections/reviews-feedback/reviews
 
 type Props = {
   row: IReviewFeedbackItem;
+  onClick?: () => void;
   showStartFeedbackButton?: boolean;
   onStartFeedback?: () => void;
   onViewFeedback?: () => void;
@@ -31,13 +32,16 @@ function getStatusColor(status: IReviewFeedbackItem['status'] | 'rejected', stat
   return 'default';
 }
 
-export function ReviewsFeedbackTableRow({ row, showStartFeedbackButton, onStartFeedback, onViewFeedback }: Readonly<Props>) {
+export function ReviewsFeedbackTableRow({ row, onClick, showStartFeedbackButton, onStartFeedback, onViewFeedback }: Readonly<Props>) {
   const employeeName = row.employeeName ?? 'Unknown';
   const employeeInitial = employeeName.charAt(0).toUpperCase();
   const isSubmitted = row.status === 'completed' && row.statusLabel === 'Feedback Submitted';
 
   return (
-    <TableRow sx={(theme) => reviewsFeedbackTableRowSx(theme)}>
+    <TableRow
+      onClick={onClick}
+      sx={(theme) => reviewsFeedbackTableRowSx(theme, { clickable: Boolean(onClick) })}
+    >
       <TableCell>
         <Stack direction="row" alignItems="center" spacing={1.5}>
           <Avatar

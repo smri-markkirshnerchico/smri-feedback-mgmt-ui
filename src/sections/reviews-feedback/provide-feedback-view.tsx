@@ -144,6 +144,22 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
         starRemarks: allRatedAsME ? starRemarks : EMPTY_STAR_REMARKS,
       });
 
+      if (typeof window !== 'undefined' && assignment) {
+        const reviewerName = readField(assignment, 'ReviewerName', 'reviewerName');
+        if (reviewerName) {
+          const key = `smri-feedback-submission-by-reviewer:${employeeName}:${reviewerName}`;
+          sessionStorage.setItem(
+            key,
+            JSON.stringify({
+              ratings,
+              starRemarksByCriterion,
+              overallComments,
+              starRemarks: allRatedAsME ? starRemarks : undefined,
+            })
+          );
+        }
+      }
+
       // Refetch assignments to update all devices
       await mutateAssignments();
 

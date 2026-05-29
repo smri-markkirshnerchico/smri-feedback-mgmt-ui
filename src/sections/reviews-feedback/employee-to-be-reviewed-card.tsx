@@ -5,6 +5,8 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
+import { Label } from 'src/components/label';
+import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
@@ -16,6 +18,9 @@ type Props = {
   dateTimeInitiated: string;
   category: string;
   year: string;
+  status?: string;
+  completion?: string;
+  completionDate?: string;
 };
 
 function DetailRow({ label, value }: { label: string; value: string }) {
@@ -67,6 +72,9 @@ export function EmployeeToBeReviewedCard({
   dateTimeInitiated,
   category,
   year,
+  status,
+  completion,
+  completionDate,
 }: Readonly<Props>) {
   return (
     <Card
@@ -75,24 +83,10 @@ export function EmployeeToBeReviewedCard({
         p: 3,
         borderRadius: '16px',
         bgcolor: 'background.paper',
-        border: '1px solid',
+        border: '1.5px dashed',
         borderColor: 'divider',
-        boxShadow: (theme) => theme.vars.customShadows.z1,
       }}
     >
-      <Typography
-        variant="h6"
-        sx={{
-          fontWeight: 700,
-          fontSize: 18,
-          lineHeight: 1.4,
-          color: 'text.primary',
-          mb: 3,
-          textAlign: 'left',
-        }}
-      >
-        Employee to be Reviewed
-      </Typography>
 
       <Stack alignItems="center" spacing={1.25} sx={{ mb: 2.5 }}>
         <Avatar
@@ -142,9 +136,58 @@ export function EmployeeToBeReviewedCard({
         <DetailRow label="Date time Initiated" value={dateTimeInitiated} />
         <DetailRow label="Category" value={category} />
         <DetailRow label="Year" value={year} />
-      </Stack>
 
-      <CardDivider />
+        {status && (
+          <Stack spacing={0.5}>
+            <Typography
+              variant="caption"
+              sx={{
+                color: 'text.secondary',
+                fontSize: 12,
+                lineHeight: 1.5,
+                fontWeight: 400,
+              }}
+            >
+              Status
+            </Typography>
+            <Box sx={{ display: 'flex' }}>
+              <Label variant="soft" color="success">
+                {status}
+              </Label>
+            </Box>
+          </Stack>
+        )}
+
+        {completion && (
+          <Stack spacing={0.5}>
+            <Typography
+              variant="caption"
+              sx={{
+                color: 'text.secondary',
+                fontSize: 12,
+                lineHeight: 1.5,
+                fontWeight: 400,
+              }}
+            >
+              Completion
+            </Typography>
+            <Box sx={{ display: 'flex' }}>
+              <Label
+                variant="soft"
+                color="default"
+                sx={{ bgcolor: 'action.hover', color: 'text.secondary' }}
+                startIcon={<Iconify icon="solar:users-group-rounded-bold" width={16} />}
+              >
+                {completion}
+              </Label>
+            </Box>
+          </Stack>
+        )}
+
+        {completionDate && (
+          <DetailRow label="Completion Date & Time" value={completionDate} />
+        )}
+      </Stack>
     </Card>
   );
 }
