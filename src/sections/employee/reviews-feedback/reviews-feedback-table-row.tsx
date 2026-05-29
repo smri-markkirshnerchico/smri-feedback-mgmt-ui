@@ -23,9 +23,9 @@ type Props = {
   onViewFeedback?: () => void;
 };
 
-function getStatusColor(status: IReviewFeedbackItem['status'] | 'rejected') {
+function getStatusColor(status: IReviewFeedbackItem['status'] | 'rejected', statusLabel?: string) {
   if (status === 'for-your-approval') return 'default';
-  if (status === 'in-progress') return 'success';
+  if (status === 'in-progress') return statusLabel === 'Pending' ? 'warning' : 'success';
   if (status === 'completed') return 'success';
   if (status === 'rejected') return 'error';
   return 'default';
@@ -65,7 +65,7 @@ export function ReviewsFeedbackTableRow({ row, showStartFeedbackButton, onStartF
       </TableCell>
 
       <TableCell>
-        <Label variant="soft" color={getStatusColor(row.status)}>
+        <Label variant="soft" color={getStatusColor(row.status, row.statusLabel)}>
           {row.statusLabel}
         </Label>
       </TableCell>
