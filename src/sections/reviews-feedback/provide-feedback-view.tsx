@@ -92,15 +92,25 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
 
   const allRated = PERFORMANCE_CRITERIA.every((c) => ratings[c.id] != null);
   const allRatedAsME = PERFORMANCE_CRITERIA.every((c) => ratings[c.id] === 'ME');
-  const canSubmit = allRated;
 
-  const ratingSummaryLabel = useMemo(() => {
-    const selected = PERFORMANCE_CRITERIA.filter((c) => ratings[c.id]).map(
-      (c) => ratings[c.id]
+  const allCriterionRemarksComplete = PERFORMANCE_CRITERIA.every((criterion) => {
+    const rating = ratings[criterion.id];
+    const isNIOrEE = rating === 'NI' || rating === 'EE';
+    if (!isNIOrEE) return true;
+    const remarks = starRemarksByCriterion[criterion.id];
+    return (
+      remarks.situation?.trim() !== '' &&
+      remarks.task?.trim() !== '' &&
+      remarks.action?.trim() !== '' &&
+      remarks.result?.trim() !== ''
     );
-    if (!selected.length) return 'No Ratings Yet';
-    return selected.join(', ');
-  }, [ratings]);
+  });
+
+  const hasAllStarRemarks = allRatedAsME && Object.values(starRemarks).every((val) => val && String(val).trim() !== '');
+  const hasOverallComments = !allRatedAsME && overallComments && overallComments.trim() !== '';
+  const hasRequiredRemarks = allRatedAsME ? hasAllStarRemarks : hasOverallComments;
+
+  const canSubmit = allRated && allCriterionRemarksComplete && hasRequiredRemarks;
 
   const handleCancel = useCallback(() => {
     router.push(needsMyReviewPath);
@@ -109,12 +119,19 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
   const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
     try {
-      const feedbackPayload = {
-        ratings: ratings as Record<string, FeedbackRating>,
-        starRemarksByCriterion: allRatedAsME ? undefined : starRemarksByCriterion,
-        overallComments: allRatedAsME ? undefined : (overallComments || undefined),
-        starRemarks: allRatedAsME ? starRemarks : undefined,
-      };
+      // Only submit what's visible on the screen based on current rating state
+      // If all ME: submit overall STAR remarks only
+      // If not all ME: submit per-criterion remarks + overall comments only
+      const feedbackPayload = allRatedAsME
+        ? {
+            ratings: ratings as Record<string, FeedbackRating>,
+            starRemarks: starRemarks,
+          }
+        : {
+            ratings: ratings as Record<string, FeedbackRating>,
+            starRemarksByCriterion,
+            overallComments: overallComments || undefined,
+          };
 
       console.log('Submitting feedback:', feedbackPayload);
       const response = await axios.patch(endpoints.application.feedbackAssignment.submit(assignmentId), feedbackPayload);
@@ -122,8 +139,8 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
 
       saveFeedbackSubmission(assignmentId, {
         ratings: ratings as Record<string, FeedbackRating>,
-        starRemarksByCriterion,
-        overallComments,
+        starRemarksByCriterion: allRatedAsME ? undefined : starRemarksByCriterion,
+        overallComments: allRatedAsME ? undefined : overallComments,
         starRemarks: allRatedAsME ? starRemarks : undefined,
       });
 
@@ -342,28 +359,6 @@ export function ProvideFeedbackView({ needsMyReviewPath }: Readonly<Props>) {
           />
         ))}
       </Stack>
-
-      {/* <Card
-        variant="outlined"
-        sx={{
-          px: 2.5,
-          py: 1.5,
-          mb: 3,
-          borderRadius: 2,
-          bgcolor: 'background.neutral',
-          borderColor: 'divider',
-          boxShadow: 'none',
-        }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-            Rating Summary
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {ratingSummaryLabel}
-          </Typography>
-        </Stack>
-      </Card> */}
 
       <Card
         variant="outlined"
