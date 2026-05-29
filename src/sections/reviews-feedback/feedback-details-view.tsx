@@ -477,10 +477,10 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
           {isMyFeedback && providers.length > 0 && (
             <Box
               sx={{
-                p: 1.5,
+                p: 0.75,
                 mb: 0,
                 borderRadius: '16px',
-                bgcolor: '#E5E8EB',
+                bgcolor: '#F4F6F8',
                 display: 'flex',
                 alignItems: 'center',
                 width: 1,
@@ -488,7 +488,7 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
             >
               <Stack
                 direction="row"
-                spacing={1.5}
+                spacing={1}
                 sx={{
                   width: 1,
                   overflowX: { xs: 'auto', md: 'visible' },
@@ -508,8 +508,8 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
-                        px: 2.5,
-                        py: 1.5,
+                        px: 2,
+                        py: 1,
                         borderRadius: '12px',
                         cursor: 'pointer',
                         bgcolor: isActive ? 'background.paper' : 'transparent',
