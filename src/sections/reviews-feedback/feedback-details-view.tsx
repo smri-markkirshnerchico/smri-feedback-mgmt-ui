@@ -457,6 +457,15 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
     return count;
   }, [isMyFeedback, employeeName, providers]);
 
+  const hasNoFeedbackYet = useMemo(() => {
+    if (isMyFeedback) {
+      return submittedCount === 0;
+    }
+    if (!assignment) return true;
+    const apiRatings = assignment['Ratings'] as Record<string, unknown> | undefined;
+    return !apiRatings || Object.keys(apiRatings).length === 0;
+  }, [isMyFeedback, submittedCount, assignment]);
+
   return (
     <MainContent maxWidth={false}>
       <Stack
@@ -498,6 +507,7 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
           </Button>
           <Button
             variant="outlined"
+            disabled={hasNoFeedbackYet}
             endIcon={<Iconify icon="solar:download-bold" width={18} />}
             sx={{
               height: 40,
