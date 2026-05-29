@@ -294,13 +294,11 @@ export function FeedbackDetailsView({ needsMyReviewPath, reviewsFeedbackPath }: 
 
   const providers = useMemo(() => {
     if (isMyFeedback) {
-      if (feedbackRequest?.Providers?.length) {
-        return feedbackRequest.Providers;
-      }
+      // Always return FALLBACK_PROVIDERS to show the custom names requested by the user
       return FALLBACK_PROVIDERS;
     }
     return [];
-  }, [isMyFeedback, feedbackRequest, FALLBACK_PROVIDERS]);
+  }, [isMyFeedback, FALLBACK_PROVIDERS]);
 
   const [criterionDetails, setCriterionDetails] = useState(getDefaultSubmittedFeedback);
   const [overallComments, setOverallComments] = useState('');
